@@ -13,7 +13,6 @@ AdjEdges::AdjEdges(const char* path) {
     entries = 0;
     std::ifstream ifile(path);
     std::string str1, str2;
-    int count = 0;
     while (ifile >> str1 >> str2)
     {
         int num1 = std::stoi(str1);

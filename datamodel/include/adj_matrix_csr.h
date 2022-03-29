@@ -6,12 +6,20 @@
 class AdjMatrixCSR
 {
 private:
+    int rows;
+    int size;
+
     int* rowPtr;
     int* colInd;
     int* val;
 public:
+    AdjMatrixCSR();
     AdjMatrixCSR(const AdjMatrixDense& matrixDense);
     ~AdjMatrixCSR();
+
+    int num_rows() const;
+    int num_size() const;
+    AdjMatrixCSR& operator=(AdjMatrixCSR&& other);
 };
 
 #endif
