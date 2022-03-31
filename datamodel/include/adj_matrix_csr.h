@@ -14,11 +14,19 @@ private:
     int* val;
 public:
     AdjMatrixCSR();
+    AdjMatrixCSR(const AdjMatrixCSR& other);
+    
+    AdjMatrixCSR(int rows, int size);
     AdjMatrixCSR(const AdjMatrixDense& matrixDense);
     ~AdjMatrixCSR();
 
     int num_rows() const;
     int num_size() const;
+
+    int* get_rows() const;
+    int* get_cols() const;
+    int* get_vals() const;
+
     AdjMatrixCSR& operator=(AdjMatrixCSR&& other);
 };
 

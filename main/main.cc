@@ -1,12 +1,17 @@
 #include <iostream>
 
-#include "test.h"
 #include "adj_edges.h"
 #include "adj_list.h"
 #include "adj_matrix_dense.h"
 #include "adj_matrix_csr.h"
+#include "test_gpu.h"
+#include "test_simple.h"
 
 int main(void) {
+
+    test_A();
+
+    /*
     std::cout << "hello world" << std::endl;
     printInfo();
     AdjMatrixCSR matrix;
@@ -24,7 +29,7 @@ int main(void) {
         AdjMatrixCSR csr(denseMatrix);
         matrix = std::move(csr);
         */
-    }
-    std::cout << "size " << matrix.num_rows() << std::endl;
+    //}
+    //std::cout << "size " << matrix.num_rows() << std::endl;
     return 0;
 }

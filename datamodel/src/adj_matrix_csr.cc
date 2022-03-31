@@ -5,18 +5,28 @@
 #include "adj_matrix_csr.h"
 #include "adj_matrix_dense.h"
 
-AdjMatrixCSR::AdjMatrixCSR() {
-    rows = 0;
-    size = 0;
-    rowPtr = NULL;
-    colInd = NULL;
-    val = NULL;
+AdjMatrixCSR::AdjMatrixCSR()
+    :rows(0), size(0), rowPtr(NULL), colInd(NULL), val(NULL) 
+{
+}
+
+AdjMatrixCSR::AdjMatrixCSR(int rows, int size)
+    :rows(rows), size(size), rowPtr(NULL), colInd(NULL), val(NULL)
+{
+    rowPtr = (int*)malloc(sizeof(int) * (rows + 1));
+    colInd = (int*)malloc(sizeof(int) * size);
+    val = (int*)malloc(sizeof(int) * size);
+}
+
+AdjMatrixCSR::AdjMatrixCSR(const AdjMatrixCSR& other)
+    :rows(other.rows), size(other.size), rowPtr(other.rowPtr), colInd(other.colInd), val(other.val)
+{
 }
 
 AdjMatrixCSR::AdjMatrixCSR(const AdjMatrixDense& matrixDense) {
-    rows = matrixDense.size() + 1;
+    rows = matrixDense.size();
     size = matrixDense.num_edges();
-    rowPtr = (int*)malloc(sizeof(int) * rows);
+    rowPtr = (int*)malloc(sizeof(int) * (rows + 1));
     colInd = (int*)malloc(sizeof(int) * size);
     val = (int*)malloc(sizeof(int) * size);
     int ind = 0;
@@ -45,6 +55,18 @@ int AdjMatrixCSR::num_rows() const {
 
 int AdjMatrixCSR::num_size() const {
     return size;
+}
+
+int* AdjMatrixCSR::get_rows() const {
+    return rowPtr;
+}
+
+int* AdjMatrixCSR::get_cols() const {
+    return colInd;
+}
+
+int* AdjMatrixCSR::get_vals() const {
+    return val;
 }
 
 AdjMatrixCSR& AdjMatrixCSR::operator=(AdjMatrixCSR&& other) {

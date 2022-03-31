@@ -1,7 +1,7 @@
 #include <iostream>
 #include <device_launch_parameters.h>
 
-#include "test.h"
+#include "test_gpu.h"
 
 void printInfo() {
     int devcnt;
