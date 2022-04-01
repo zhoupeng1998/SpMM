@@ -9,17 +9,19 @@
 
 int main(void) {
 
-    test_A();
 
-    /*
-    std::cout << "hello world" << std::endl;
-    printInfo();
-    AdjMatrixCSR matrix;
-    std::cout << "size " << matrix.num_rows() << std::endl;
-    {
-        AdjList adjList("graph500-scale18-ef16_adj.edges");
-        std::cout << adjList.num_vertices() << std::endl;
-        std::cout << adjList.num_edges() << std::endl;
+    AdjEdges test= AdjEdges("../../graph/graph500-scale19-ef16_adj.edges");
+
+    AdjMatrixCSR test_csr(test);
+    std::cout << "size " << test_csr.num_rows() << std::endl;
+
+
+//    AdjMatrixCSR matrix;
+//    std::cout << "size " << matrix.num_rows() << std::endl;
+//    {
+//        AdjList adjList("graph500-scale18-ef16_adj.edges");
+//        std::cout << adjList.num_vertices() << std::endl;
+//        std::cout << adjList.num_edges() << std::endl;
         /*
         AdjEdges edges("graph500-scale18-ef16_adj.edges");
         std::cout << "data load complete" << std::endl;

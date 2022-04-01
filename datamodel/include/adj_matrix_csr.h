@@ -18,6 +18,7 @@ public:
     
     AdjMatrixCSR(int rows, int size);
     AdjMatrixCSR(const AdjMatrixDense& matrixDense);
+    AdjMatrixCSR( AdjEdges& AdjEdges);
     ~AdjMatrixCSR();
 
     int num_rows() const;

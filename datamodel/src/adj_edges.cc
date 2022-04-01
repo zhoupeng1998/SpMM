@@ -20,6 +20,7 @@ AdjEdges::AdjEdges(const char* path) {
         vertices = std::max(vertices, std::max(num1, num2));
         data.push_back({num1 - 1, num2 - 1});
         entries++;
+
     }
     ifile.close();
 }
@@ -30,6 +31,30 @@ AdjEdges::~AdjEdges() {
 int AdjEdges::num_vertices() const {
     return vertices;
 }
+
+int AdjEdges::CountNNZ() const {
+    int count=0;
+    for(auto edge:data){
+        count++;
+    }
+    return count;
+}
+
+int AdjEdges::CountRows() const {
+    int count=0;
+    int previous = 0;
+
+    for(auto edge:data){
+        if(edge[1]!=previous){
+            count++;
+            previous=edge[1];
+        }
+
+    }
+    return count;
+}
+
+
 
 int AdjEdges::num_entries() const {
     return entries;

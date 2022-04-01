@@ -23,6 +23,27 @@ AdjMatrixCSR::AdjMatrixCSR(const AdjMatrixCSR& other)
 {
 }
 
+AdjMatrixCSR::AdjMatrixCSR( AdjEdges& AdjEdges) {
+    rows = AdjEdges.CountRows();
+    size = AdjEdges.CountNNZ();
+    rowPtr = (int*)malloc(sizeof(int) * (rows + 1));
+    colInd = (int*)malloc(sizeof(int) * size);
+    val = (int*)malloc(sizeof(int) * size);
+    int ind = 0;
+    int count=0;
+    int previous=0;
+    for (int i = 0; i <size; i++) {
+        val[ind] = 1;
+        colInd[ind] = AdjEdges.data[i][0]-1;
+        if(previous!=AdjEdges.data[i][1]) {
+            rowPtr[previous] = count;
+            previous++;
+        }
+    }
+
+}
+
+
 AdjMatrixCSR::AdjMatrixCSR(const AdjMatrixDense& matrixDense) {
     rows = matrixDense.size();
     size = matrixDense.num_edges();
@@ -42,6 +63,8 @@ AdjMatrixCSR::AdjMatrixCSR(const AdjMatrixDense& matrixDense) {
         rowPtr[row+1] = ind;
     }
 }
+
+
 
 AdjMatrixCSR::~AdjMatrixCSR() {
     free(rowPtr);
