@@ -13,7 +13,7 @@ void csr_spmm_symbolic(AdjMatrixCSR *A, AdjMatrixCSR *B, AdjMatrixCSR *C, int *w
     int m = A->num_rows(), k = A->num_rows(), n = B->num_rows();
 
     C->rowPtr = (int *) malloc((m+1)*sizeof(int));
-
+    
     for (i1 = 0; i1 < m; i1++)
     {
         int MARK=i1+1;
@@ -29,7 +29,7 @@ void csr_spmm_symbolic(AdjMatrixCSR *A, AdjMatrixCSR *B, AdjMatrixCSR *C, int *w
             for (i3 = B->rowPtr[j]; i3 < B->rowPtr[j+1]; i3++)
             {
                 int col = B->colInd[i3];
-                //assert(col >= 0 && col < n);
+                assert(col >= 0 && col < n);
                 if (work[col] != MARK)
                 {
                     count++;
@@ -48,8 +48,11 @@ void csr_spmm_symbolic(AdjMatrixCSR *A, AdjMatrixCSR *B, AdjMatrixCSR *C, int *w
     C->rows = m;
     C->cols = n;
     C->size = C->rowPtr[m];
+
     C->colInd = (int *) malloc(C->size*sizeof(int));
     C->val =  (int *) malloc(C->size*sizeof(int));
+    std::cout<<"finished symbolic"<<std::endl;
+
 }
 
 
@@ -58,31 +61,40 @@ void csr_spmm_numeric(AdjMatrixCSR *A, AdjMatrixCSR *B, AdjMatrixCSR *C, int *wo
     int i1, i2, i3;
     int m = A->num_rows(), k = A->num_rows(), n = B->num_rows(), pos = 0;
 
+    std::cout<<"start loop1"<<std::endl;
     for (i1 = 0; i1 < m; i1++)
     {
         int ipos=pos;
+        std::cout<<"start loop2"<<std::endl;
         for (i2 = A->rowPtr[i1]; i2 < A->rowPtr[i1+1]; i2++)
         {
             int j = A->colInd[i2];
             int va = A->val[i2];
             assert(j >= 0 && j < k);
+            std::cout<<"start loop3"<<std::endl;
             for (i3 = B->rowPtr[j] ; i3 < B->rowPtr[j+1] ; i3++)
             {
                 int q, col = B->colInd[i3];
                 int vb = B->val[i3];
                 assert(col >= 0 && col < n);
+                std::cout<<"enter if"<<std::endl;
                 if ((q = work[col]) <= ipos)
-                {
+                {   std::cout<<"1"<<std::endl;
+                    std::cout<<"col[0]"<<C->colInd[0]  <<std::endl;
                     C->colInd[pos] = col;
+                    std::cout<<"2"<<std::endl;
                     C->val[pos] = va*vb;
+                    std::cout<<"3"<<std::endl;
                     work[col] = ++pos;
                 }
                 else
                 {
                     assert(C->colInd[q-1] == col);
                     C->val[q-1] += va*vb;
+
                 }
             }
+            std::cout<<"fuck"<<std::endl;
         }
         assert(C->rowPtr[i1+1] == pos);
     }
@@ -93,6 +105,7 @@ void csr_spmm_cpu(AdjMatrixCSR *A, AdjMatrixCSR *B, AdjMatrixCSR *C)
     int *work = (int *) calloc(B->rows, sizeof(int));
     csr_spmm_symbolic(A, B, C, work);
     memset(work, 0, B->cols*sizeof(int));
+    std::cout<<"start numeric"<<std::endl;
     csr_spmm_numeric(A, B, C, work);
     free(work);
 }

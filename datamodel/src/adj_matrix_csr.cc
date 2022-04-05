@@ -28,7 +28,7 @@ AdjMatrixCSR::AdjMatrixCSR( AdjEdges& AdjEdges) {
 
     cols = AdjEdges.CountRows();
     size = AdjEdges.CountNNZ();
-    std::cout<<"rows "<<rows<<"   nnzs: "<<size<<std::endl;
+    //std::cout<<"rows "<<rows<<"   nnzs: "<<size<<std::endl;
     rowPtr = (int*)malloc(sizeof(int) * (rows + 1));
     colInd = (int*)malloc(sizeof(int) * size);
     val = (int*)malloc(sizeof(int) * size);
@@ -45,7 +45,7 @@ AdjMatrixCSR::AdjMatrixCSR( AdjEdges& AdjEdges) {
         count++;
     }
     rowPtr[previous+1] = count;
-}
+  
 
 
 AdjMatrixCSR::AdjMatrixCSR(const AdjMatrixDense& matrixDense) {
