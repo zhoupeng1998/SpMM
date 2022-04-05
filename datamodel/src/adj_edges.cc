@@ -51,7 +51,7 @@ int AdjEdges::CountRows() const {
         }
 
     }
-    return count;
+    return ++count;
 }
 
 

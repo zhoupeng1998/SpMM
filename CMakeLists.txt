@@ -1,7 +1,7 @@
 
 cmake_minimum_required (VERSION 3.8 FATAL_ERROR)
 
-project(spmm LANGUAGES CXX CUDA)
+project(spmm LANGUAGES CXX )
 
 add_subdirectory(datamodel)
 add_subdirectory(serial)

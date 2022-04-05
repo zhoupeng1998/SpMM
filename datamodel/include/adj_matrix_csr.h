@@ -6,13 +6,18 @@
 class AdjMatrixCSR
 {
 private:
-    int rows;
-    int size;
 
+
+
+
+public:
     int* rowPtr;
     int* colInd;
     int* val;
-public:
+    int rows;
+    int cols;
+    int size;
+
     AdjMatrixCSR();
     AdjMatrixCSR(const AdjMatrixCSR& other);
     
