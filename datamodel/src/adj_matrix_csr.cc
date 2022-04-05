@@ -45,7 +45,7 @@ AdjMatrixCSR::AdjMatrixCSR( AdjEdges& AdjEdges) {
         count++;
     }
     rowPtr[previous+1] = count;
-  
+}
 
 
 AdjMatrixCSR::AdjMatrixCSR(const AdjMatrixDense& matrixDense) {

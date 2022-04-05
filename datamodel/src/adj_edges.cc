@@ -18,7 +18,7 @@ AdjEdges::AdjEdges(const char* path) {
         int num1 = std::stoi(str1);
         int num2 = std::stoi(str2);
         vertices = std::max(vertices, std::max(num1, num2));
-        data.push_back({num1 - 1, num2 - 1});
+        data.push_back({num1-1, num2-1});
         entries++;
 
     }

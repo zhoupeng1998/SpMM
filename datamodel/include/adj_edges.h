@@ -11,7 +11,7 @@ private:
 
 
 public:
-    std::vector<std::vector<int>> data;
+    std::vector<std::vector<int> > data;
     AdjEdges(const char* path);
     ~AdjEdges();
     int CountNNZ() const;
