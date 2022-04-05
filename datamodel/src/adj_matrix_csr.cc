@@ -10,12 +10,12 @@ AdjMatrixCSR::AdjMatrixCSR()
 {
 }
 
-AdjMatrixCSR::AdjMatrixCSR(int rows, int size)
+AdjMatrixCSR::AdjMatrixCSR(long rows, long size)
     :rows(rows), size(size), rowPtr(NULL), colInd(NULL), val(NULL)
 {
-    rowPtr = (int*)malloc(sizeof(int) * (rows + 1));
-    colInd = (int*)malloc(sizeof(int) * size);
-    val = (int*)malloc(sizeof(int) * size);
+    rowPtr = (long*)malloc(sizeof(long) * (rows + 1));
+    colInd = (long*)malloc(sizeof(long) * size);
+    val = (long*)malloc(sizeof(long) * size);
 }
 
 AdjMatrixCSR::AdjMatrixCSR(const AdjMatrixCSR& other)
@@ -29,13 +29,13 @@ AdjMatrixCSR::AdjMatrixCSR( AdjEdges& AdjEdges) {
     cols = AdjEdges.CountRows();
     size = AdjEdges.CountNNZ();
     //std::cout<<"rows "<<rows<<"   nnzs: "<<size<<std::endl;
-    rowPtr = (int*)malloc(sizeof(int) * (rows + 1));
-    colInd = (int*)malloc(sizeof(int) * size);
-    val = (int*)malloc(sizeof(int) * size);
-    int count=0;
-    int previous=0;
+    rowPtr = (long*)malloc(sizeof(long) * (rows + 1));
+    colInd = (long*)malloc(sizeof(long) * size);
+    val = (long*)malloc(sizeof(long) * size);
+    long count=0;
+    long previous=0;
     rowPtr[0]=0;
-    for (int i = 0; i <size; i++) {
+    for (long i = 0; i <size; i++) {
         val[i] = 1;
         colInd[i] = AdjEdges.data[i][0];
         if(previous != AdjEdges.data[i][1]) {
@@ -48,26 +48,26 @@ AdjMatrixCSR::AdjMatrixCSR( AdjEdges& AdjEdges) {
 }
 
 
-AdjMatrixCSR::AdjMatrixCSR(const AdjMatrixDense& matrixDense) {
-    rows = matrixDense.size();
+// AdjMatrixCSR::AdjMatrixCSR(const AdjMatrixDense& matrixDense) {
+//     rows = matrixDense.size();
 
-    size = matrixDense.num_edges();
-    rowPtr = (int*)malloc(sizeof(int) * (rows + 1));
-    colInd = (int*)malloc(sizeof(int) * size);
-    val = (int*)malloc(sizeof(int) * size);
-    int ind = 0;
-    rowPtr[0] = 0;
-    for (int row = 0; row < matrixDense.size(); row++) {
-        for (int col = 0; col < matrixDense.size(); col++) {
-            if (matrixDense[row][col] != 0) {
-                val[ind] = matrixDense[row][col];
-                colInd[ind] = col;
-                ind++;
-            }
-        }
-        rowPtr[row+1] = ind;
-    }
-}
+//     size = matrixDense.num_edges();
+//     rowPtr = (int*)malloc(sizeof(int) * (rows + 1));
+//     colInd = (int*)malloc(sizeof(int) * size);
+//     val = (int*)malloc(sizeof(int) * size);
+//     int ind = 0;
+//     rowPtr[0] = 0;
+//     for (int row = 0; row < matrixDense.size(); row++) {
+//         for (int col = 0; col < matrixDense.size(); col++) {
+//             if (matrixDense[row][col] != 0) {
+//                 val[ind] = matrixDense[row][col];
+//                 colInd[ind] = col;
+//                 ind++;
+//             }
+//         }
+//         rowPtr[row+1] = ind;
+//     }
+// }
 
 
 
@@ -77,23 +77,23 @@ AdjMatrixCSR::~AdjMatrixCSR() {
     free(val);
 }
 
-int AdjMatrixCSR::num_rows() const {
+long AdjMatrixCSR::num_rows() const {
     return rows;
 }
 
-int AdjMatrixCSR::num_size() const {
+long AdjMatrixCSR::num_size() const {
     return size;
 }
 
-int* AdjMatrixCSR::get_rows() const {
+long* AdjMatrixCSR::get_rows() const {
     return rowPtr;
 }
 
-int* AdjMatrixCSR::get_cols() const {
+long* AdjMatrixCSR::get_cols() const {
     return colInd;
 }
 
-int* AdjMatrixCSR::get_vals() const {
+long* AdjMatrixCSR::get_vals() const {
     return val;
 }
 

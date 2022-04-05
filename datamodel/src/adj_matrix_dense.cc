@@ -7,24 +7,24 @@
 #include "adj_matrix_dense.h"
 #include "adj_edges.h"
 
-AdjMatrixDense::AdjMatrixDense(int size) {
+AdjMatrixDense::AdjMatrixDense(long size) {
     vertices = size;
     edges = 0;
-    matrix = (int**)malloc(sizeof(int*) * vertices);
-    for (int i = 0; i < vertices; i++) {
-        matrix[i] = (int*)malloc(sizeof(int) * vertices);
+    matrix = (long**)malloc(sizeof(long*) * vertices);
+    for (long i = 0; i < vertices; i++) {
+        matrix[i] = (long*)malloc(sizeof(long) * vertices);
     }
 }
 
-AdjMatrixDense::AdjMatrixDense(int size, int* arr) 
+AdjMatrixDense::AdjMatrixDense(long size, long* arr) 
     :vertices(size), edges(0), matrix(NULL)
 {
-    matrix = (int**)malloc(sizeof(int*) * vertices);
-    for (int i = 0; i < vertices; i++) {
-        matrix[i] = (int*)malloc(sizeof(int) * vertices);
+    matrix = (long**)malloc(sizeof(long*) * vertices);
+    for (long i = 0; i < vertices; i++) {
+        matrix[i] = (long*)malloc(sizeof(long) * vertices);
     }
-    for (int i = 0; i < size; i++) {
-        for (int j = 0; j < size; j++) {
+    for (long i = 0; i < size; i++) {
+        for (long j = 0; j < size; j++) {
             matrix[i][j] = arr[i*size+j];
             if (arr[i*size+j] != 0) {
                 edges++;
@@ -36,17 +36,17 @@ AdjMatrixDense::AdjMatrixDense(int size, int* arr)
 AdjMatrixDense::AdjMatrixDense(const AdjEdges& edges) {
     vertices = edges.num_vertices();
     this->edges = 0;
-    matrix = (int**)malloc(sizeof(int*) * vertices);
-    for (int i = 0; i < vertices; i++) {
-        matrix[i] = (int*)malloc(sizeof(int) * vertices);
+    matrix = (long**)malloc(sizeof(long*) * vertices);
+    for (long i = 0; i < vertices; i++) {
+        matrix[i] = (long*)malloc(sizeof(long) * vertices);
     }
-    for (int i = 0; i < edges.num_entries(); i++) {
+    for (long i = 0; i < edges.num_entries(); i++) {
         matrix[edges[i][0]][edges[i][1]] = 1;
         matrix[edges[i][1]][edges[i][0]] = 1;
     }
     // TODO: edge count?
-    for (int i = 0; i < vertices; i++) {
-        for (int j = 0; j < vertices; j++) {
+    for (long i = 0; i < vertices; i++) {
+        for (long j = 0; j < vertices; j++) {
             if (matrix[i][j] > 0) {
                 this->edges++;
             }
@@ -55,32 +55,32 @@ AdjMatrixDense::AdjMatrixDense(const AdjEdges& edges) {
 }
 
 AdjMatrixDense::~AdjMatrixDense() {
-    for (int i = 0; i < vertices; i++) {
+    for (long i = 0; i < vertices; i++) {
         free(matrix[i]);
     }
     free(matrix);
 }
 
-int AdjMatrixDense::num_vertices() const {
+long AdjMatrixDense::num_vertices() const {
     return vertices;
 }
 
-int AdjMatrixDense::num_edges() const {
+long AdjMatrixDense::num_edges() const {
     return edges;
 }
 
-void AdjMatrixDense::set_edges(int edges) {
+void AdjMatrixDense::set_edges(long edges) {
     this->edges = edges;
 }
 
-int AdjMatrixDense::size() const {
+long AdjMatrixDense::size() const {
     return vertices;
 }
 
-int* AdjMatrixDense::operator[](int index) {
+long* AdjMatrixDense::operator[](long index) {
     return matrix[index];
 }
 
-const int* AdjMatrixDense::operator[](int index) const {
+const long* AdjMatrixDense::operator[](long index) const {
     return matrix[index];
 }

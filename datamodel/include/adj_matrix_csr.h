@@ -11,27 +11,27 @@ private:
 
 
 public:
-    int* rowPtr;
-    int* colInd;
-    int* val;
-    int rows;
-    int cols;
-    int size;
+    long* rowPtr;
+    long* colInd;
+    long* val;
+    long rows;
+    long cols;
+    long size;
 
     AdjMatrixCSR();
     AdjMatrixCSR(const AdjMatrixCSR& other);
     
-    AdjMatrixCSR(int rows, int size);
+    AdjMatrixCSR(long rows, long size);
     AdjMatrixCSR(const AdjMatrixDense& matrixDense);
     AdjMatrixCSR( AdjEdges& AdjEdges);
     ~AdjMatrixCSR();
 
-    int num_rows() const;
-    int num_size() const;
+    long num_rows() const;
+    long num_size() const;
 
-    int* get_rows() const;
-    int* get_cols() const;
-    int* get_vals() const;
+    long* get_rows() const;
+    long* get_cols() const;
+    long* get_vals() const;
 
     AdjMatrixCSR& operator=(AdjMatrixCSR&& other);
 };
