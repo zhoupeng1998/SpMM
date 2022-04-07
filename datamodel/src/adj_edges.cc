@@ -25,6 +25,25 @@ AdjEdges::AdjEdges(const char* path) {
     ifile.close();
 }
 
+AdjEdges::AdjEdges(const char* path, int limit) {
+    vertices = 0;
+    entries = 0;
+    std::ifstream ifile(path);
+    std::string str1, str2;
+    while (ifile >> str1 >> str2)
+    {
+        int num1 = std::stoi(str1);
+        int num2 = std::stoi(str2);
+        if (num1 < limit && num2 < limit) {
+            vertices = std::max(vertices, std::max(num1, num2));
+            data.push_back({num1-1, num2-1});
+            entries++;
+        }
+    }
+    ifile.close();
+    std::cout << vertices << " " << entries << std::endl;
+}
+
 AdjEdges::~AdjEdges() {
 }
 

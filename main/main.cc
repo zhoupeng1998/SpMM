@@ -12,7 +12,7 @@ int main(void) {
     struct timespec start, end;
     double time;
 
-    AdjEdges dataset= AdjEdges("../../graph/graph500-scale18-ef16_adj.edges");
+    AdjEdges dataset= AdjEdges("graph500-scale18-ef16_adj.edges", 50000);
     //AdjEdges dataset= AdjEdges("../../graph/test.edges");
 
     // std::cout<< " A nnz "<<dataset.data.size()<<std::endl;
