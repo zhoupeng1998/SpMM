@@ -114,6 +114,7 @@ void csr_spmm_numeric(AdjMatrixCSR *A, AdjMatrixCSR *B, AdjMatrixCSR *C, long *w
 AdjMatrixCSR * csr_spmm_cpu(AdjMatrixCSR *A, AdjMatrixCSR *B)
 {
     long *work = (long *) calloc(B->rows, sizeof(long));
+    std::cout<<"start symbolic"<<std::endl;
     AdjMatrixCSR *C = csr_spmm_symbolic(A, B, work);
 
     memset(work, 0, B->cols*sizeof(long));

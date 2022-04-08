@@ -1,3 +1,5 @@
+#include <assert.h>
+
 #include <iostream>
 
 #include "adj_edges.h"
@@ -12,19 +14,25 @@ int main(void) {
     struct timespec start, end;
     double time;
 
-    AdjEdges dataset= AdjEdges("graph500-scale18-ef16_adj.edges", 50000);
-    //AdjEdges dataset= AdjEdges("../../graph/test.edges");
+    AdjEdges dataset= AdjEdges("graph500-scale18-ef16_adj.edges", 25000);
 
+    //AdjEdges dataset= AdjEdges("../../graph/test.edges");
+    AdjMatrixDense dense(dataset);
+    std::cout << "dense complete" << std::endl;
     // std::cout<< " A nnz "<<dataset.data.size()<<std::endl;
     // std::cout<< " A rows "<<dataset.CountRows()<<std::endl;
+    AdjMatrixCSR matrix_B = AdjMatrixCSR(dense);
+    //matrix_B.dump();
     AdjMatrixCSR matrix_A = AdjMatrixCSR(dataset);
-    AdjMatrixCSR matrix_B = AdjMatrixCSR(dataset);
+    //matrix_A.dump();
+    
 
 
     AdjMatrixCSR *A= &matrix_A;
     AdjMatrixCSR *B= &matrix_B;
 
-
+    //std::cout << std::endl;
+    //matrix_B.dump();
     
     //std::cout<<" ind A " << A->colInd[0]<<" "<<A->colInd[1]<<" "<<A->colInd[2]<<" "<<A->colInd[3]<<" "<<A->colInd[4]<<" "<<A->colInd[5]<<" "<<A->colInd[6]<<" "<<A->colInd[7]<<" "<<A->colInd[9]<<" "<< std::endl;
     std::cout<<" ind A " << A->val[0]<<" "<<A->val[1]<<" "<<A->val[2]<<" "<<A->val[3]<<" "<<A->val[4]<<" "<<A->val[5]<<" "<<A->val[6]<<" "<<A->val[7]<<" "<<A->val[9]<<" "<< std::endl;

@@ -33,6 +33,8 @@ public:
     long* get_cols() const;
     long* get_vals() const;
 
+    void dump() const;
+
     AdjMatrixCSR& operator=(AdjMatrixCSR&& other);
 };
 

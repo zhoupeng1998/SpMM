@@ -38,11 +38,11 @@ AdjMatrixDense::AdjMatrixDense(const AdjEdges& edges) {
     this->edges = 0;
     matrix = (long**)malloc(sizeof(long*) * vertices);
     for (long i = 0; i < vertices; i++) {
-        matrix[i] = (long*)malloc(sizeof(long) * vertices);
+        matrix[i] = (long*)calloc(vertices, sizeof(long));
     }
     for (long i = 0; i < edges.num_entries(); i++) {
         matrix[edges[i][0]][edges[i][1]] = 1;
-        matrix[edges[i][1]][edges[i][0]] = 1;
+        //matrix[edges[i][1]][edges[i][0]] = 1;
     }
     // TODO: edge count?
     for (long i = 0; i < vertices; i++) {
