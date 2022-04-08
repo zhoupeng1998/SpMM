@@ -3,6 +3,8 @@
 
 #include <vector>
 
+#include "data.h"
+
 class AdjEdges
 {
 private:

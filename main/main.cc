@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#include "data.h"
 #include "adj_edges.h"
 #include "adj_list.h"
 #include "adj_matrix_dense.h"

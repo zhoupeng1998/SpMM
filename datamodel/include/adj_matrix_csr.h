@@ -1,37 +1,35 @@
 #ifndef _ADJ_MATRIX_CSR_H_
 #define _ADJ_MATRIX_CSR_H_
 
+#include "data.h"
 #include "adj_matrix_dense.h"
 
 class AdjMatrixCSR
 {
 private:
 
-
-
-
 public:
-    long* rowPtr;
-    long* colInd;
-    long* val;
-    long rows;
-    long cols;
-    long size;
+    int* rowPtr;
+    int* colInd;
+    int* val;
+    INT rows;
+    INT cols;
+    INT size;
 
     AdjMatrixCSR();
     AdjMatrixCSR(const AdjMatrixCSR& other);
     
-    AdjMatrixCSR(long rows, long size);
+    AdjMatrixCSR(INT rows, INT size);
     AdjMatrixCSR(const AdjMatrixDense& matrixDense);
     AdjMatrixCSR( AdjEdges& AdjEdges);
     ~AdjMatrixCSR();
 
-    long num_rows() const;
-    long num_size() const;
+    INT num_rows() const;
+    INT num_size() const;
 
-    long* get_rows() const;
-    long* get_cols() const;
-    long* get_vals() const;
+    int* get_rows() const;
+    int* get_cols() const;
+    int* get_vals() const;
 
     void dump() const;
 
