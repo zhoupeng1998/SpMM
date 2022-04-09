@@ -3,7 +3,7 @@
 #include <string.h>
 #include <iostream>
 
-#include "serial_spmm.h"
+#include "spmm_serial.h"
 #include "adj_matrix_csr.h"
 
 

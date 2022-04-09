@@ -9,7 +9,7 @@
 #include "adj_matrix_csr.h"
 #include "test_gpu.h"
 #include "test_simple.h"
-#include "serial_spmm.h"
+#include "spmm_serial.h"
 #include "time.h"
 int main(void) {
     struct timespec start, end;

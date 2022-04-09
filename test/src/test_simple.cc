@@ -3,8 +3,8 @@
 #include "test_simple.h"
 #include "adj_matrix_dense.h"
 #include "adj_matrix_csr.h"
-#include "serial_spmm.h"
-#include "serial_dense_mm.h"
+#include "spmm_serial.h"
+#include "dense_mm_serial.h"
 
 void test_A() {
     int sample_A[] = {0,2,0,1,0,
