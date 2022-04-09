@@ -1,5 +1,5 @@
-#ifndef _SERIAL_SPMM_H_
-#define _SERIAL_SPMM_H_
+#ifndef _SPMM_SERIAL_H_
+#define _SPMM_SERIAL_H_
 
 #include "adj_matrix_csr.h"
 

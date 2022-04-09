@@ -1,7 +1,7 @@
 
 cmake_minimum_required (VERSION 3.8 FATAL_ERROR)
 
-project(spmm LANGUAGES CXX )
+project(spmm LANGUAGES CXX CUDA)
 add_definitions(-std=c++11)
 add_subdirectory(datamodel)
 add_subdirectory(spmm)

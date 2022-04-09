@@ -1,5 +1,5 @@
-#ifndef _SERIAL_DENSE_MM_H_
-#define _SERIAL_DENSE_MM_H_
+#ifndef _DENSE_MM_SERIAL_H_
+#define _DENSE_MM_SERIAL_H_
 
 #include "adj_matrix_dense.h"
 
