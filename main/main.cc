@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#include "data.h"
 #include "adj_edges.h"
 #include "adj_list.h"
 #include "adj_matrix_dense.h"
@@ -14,14 +15,14 @@ int main(void) {
     struct timespec start, end;
     double time;
 
-    AdjEdges dataset= AdjEdges("graph500-scale18-ef16_adj.edges", 25000);
+    AdjEdges dataset= AdjEdges("../../graph/graph500-scale18-ef16_adj.edges");
 
     //AdjEdges dataset= AdjEdges("../../graph/test.edges");
-    AdjMatrixDense dense(dataset);
+    //AdjMatrixDense dense(dataset);
     std::cout << "dense complete" << std::endl;
     // std::cout<< " A nnz "<<dataset.data.size()<<std::endl;
     // std::cout<< " A rows "<<dataset.CountRows()<<std::endl;
-    AdjMatrixCSR matrix_B = AdjMatrixCSR(dense);
+    //AdjMatrixCSR matrix_B = AdjMatrixCSR(dense);
     //matrix_B.dump();
     AdjMatrixCSR matrix_A = AdjMatrixCSR(dataset);
     //matrix_A.dump();
@@ -29,7 +30,7 @@ int main(void) {
 
 
     AdjMatrixCSR *A= &matrix_A;
-    AdjMatrixCSR *B= &matrix_B;
+    AdjMatrixCSR *B= &matrix_A;
 
     //std::cout << std::endl;
     //matrix_B.dump();
