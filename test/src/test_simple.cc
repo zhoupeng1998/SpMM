@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include "data.h"
 #include "test_simple.h"
 #include "adj_matrix_dense.h"
 #include "adj_matrix_csr.h"
@@ -25,11 +26,11 @@ void test_A() {
     AdjMatrixCSR csr_A(dense_A);
     AdjMatrixCSR csr_B(dense_B);
 
-    int* A_rows = csr_A.get_rows();
+    INT* A_rows = csr_A.get_rows();
     int* A_cols = csr_A.get_cols();
     int* A_vals = csr_A.get_vals();
 
-    int* B_rows = csr_B.get_rows();
+    INT* B_rows = csr_B.get_rows();
     int* B_cols = csr_B.get_cols();
     int* B_vals = csr_B.get_vals();
 
@@ -79,8 +80,8 @@ void test_A() {
 
     std::cout << "C - csr" << std::endl;
     INT* C_rows = csr_C.get_rows();
-    INT* C_cols = csr_C.get_cols();
-    INT* C_vals = csr_C.get_vals();
+    int* C_cols = csr_C.get_cols();
+    int* C_vals = csr_C.get_vals();
     std::cout << csr_C.num_rows() << " " << csr_C.num_size() << std::endl;
     for (INT i = 0; i <= csr_C.num_rows(); i++) {
         std::cout << C_rows[i] << " ";

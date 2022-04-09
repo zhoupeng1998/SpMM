@@ -9,7 +9,7 @@ class AdjMatrixCSR
 private:
 
 public:
-    int* rowPtr;
+    INT* rowPtr;
     int* colInd;
     int* val;
     INT rows;
@@ -27,7 +27,7 @@ public:
     INT num_rows() const;
     INT num_size() const;
 
-    int* get_rows() const;
+    INT* get_rows() const;
     int* get_cols() const;
     int* get_vals() const;
 

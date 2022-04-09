@@ -13,7 +13,7 @@ AdjMatrixCSR::AdjMatrixCSR()
 AdjMatrixCSR::AdjMatrixCSR(INT rows, INT size)
     :rows(rows), cols(rows), size(size), rowPtr(NULL), colInd(NULL), val(NULL)
 {
-    rowPtr = (int*)malloc(sizeof(int) * (rows + 1));
+    rowPtr = (INT*)malloc(sizeof(INT) * (rows + 1));
     colInd = (int*)malloc(sizeof(int) * size);
     val = (int*)malloc(sizeof(int) * size);
 }
@@ -29,7 +29,7 @@ AdjMatrixCSR::AdjMatrixCSR(AdjEdges& AdjEdges) {
     cols = AdjEdges.num_vertices();
     size = AdjEdges.num_entries();
     //std::cout<<"rows "<<rows<<"   nnzs: "<<size<<std::endl;
-    rowPtr = (int*)malloc(sizeof(int) * (rows + 1));
+    rowPtr = (INT*)malloc(sizeof(INT) * (rows + 1));
     colInd = (int*)malloc(sizeof(int) * size);
     val = (int*)malloc(sizeof(int) * size);
     for (INT i = 0; i < size; i++) {
@@ -47,7 +47,7 @@ AdjMatrixCSR::AdjMatrixCSR(const AdjMatrixDense& matrixDense) {
     rows = matrixDense.size();
     cols = matrixDense.size();
     size = matrixDense.num_edges();
-    rowPtr = (int*)malloc(sizeof(int) * rows);
+    rowPtr = (INT*)malloc(sizeof(INT) * rows);
     colInd = (int*)malloc(sizeof(int) * size);
     val = (int*)malloc(sizeof(int) * size);
     INT ind = 0;
@@ -80,7 +80,7 @@ INT AdjMatrixCSR::num_size() const {
     return size;
 }
 
-int* AdjMatrixCSR::get_rows() const {
+INT* AdjMatrixCSR::get_rows() const {
     return rowPtr;
 }
 

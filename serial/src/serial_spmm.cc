@@ -14,7 +14,7 @@ AdjMatrixCSR *csr_spmm_symbolic(AdjMatrixCSR *A, AdjMatrixCSR *B, int *work)
 
     AdjMatrixCSR*C=new AdjMatrixCSR(m,n);
 
-    C->rowPtr = (int*) malloc((m+1)*sizeof(int));
+    C->rowPtr = (INT*) malloc((m+1)*sizeof(INT));
     
     for (i1 = 0; i1 < m; i1++)
     {
@@ -106,6 +106,10 @@ void csr_spmm_numeric(AdjMatrixCSR *A, AdjMatrixCSR *B, AdjMatrixCSR *C, int *wo
                 }
             }
             
+        }
+        if(C->rowPtr[i1+1] != pos){
+            std::cout<<C->rowPtr[i1+1]<<std::endl;
+            std::cout<<pos<<std::endl;
         }
         assert(C->rowPtr[i1+1] == pos);
     }
