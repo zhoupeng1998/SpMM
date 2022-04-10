@@ -194,3 +194,4 @@ $RECYCLE.BIN/
 # End of https://www.toptal.com/developers/gitignore/api/c,c++,cuda,linux,macos,windows,visualstudiocode,cmake
 
 bin
+graph

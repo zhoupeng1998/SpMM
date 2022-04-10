@@ -7,7 +7,7 @@
 #include "spmm_serial.h"
 #include "adj_matrix_csr.h"
 
-AdjMatrixCSR *csr_spmm_symbolic(AdjMatrixCSR *A, AdjMatrixCSR *B, INT *work)
+AdjMatrixCSR *csr_spmm_cpu_symbolic(AdjMatrixCSR *A, AdjMatrixCSR *B, INT *work)
 {
     INT i1, i2, i3;
     INT m = A->num_rows(), k = A->num_rows(), n = B->num_rows();
@@ -15,7 +15,7 @@ AdjMatrixCSR *csr_spmm_symbolic(AdjMatrixCSR *A, AdjMatrixCSR *B, INT *work)
     AdjMatrixCSR*C=new AdjMatrixCSR(m,n);
 
 
-    C->rowPtr = (int*) malloc((m+1)*sizeof(int));
+    C->rowPtr = (INT*) malloc((m+1)*sizeof(INT));
     for (i1 = 0; i1 < m; i1++)
     {
         INT MARK=i1+1;
@@ -68,7 +68,7 @@ AdjMatrixCSR *csr_spmm_symbolic(AdjMatrixCSR *A, AdjMatrixCSR *B, INT *work)
     return C;
 }
 
-void csr_spmm_numeric(AdjMatrixCSR *A, AdjMatrixCSR *B, AdjMatrixCSR *C, INT *work)
+void csr_spmm_cpu_numeric(AdjMatrixCSR *A, AdjMatrixCSR *B, AdjMatrixCSR *C, INT *work)
 {
     INT i1, i2, i3;
     INT m = A->num_rows(), k = A->num_rows(), n = B->num_rows(), pos = 0;
@@ -114,12 +114,12 @@ void csr_spmm_numeric(AdjMatrixCSR *A, AdjMatrixCSR *B, AdjMatrixCSR *C, INT *wo
 AdjMatrixCSR * csr_spmm_cpu(AdjMatrixCSR *A, AdjMatrixCSR *B)
 {
     INT *work = (INT *) calloc(B->rows, sizeof(INT));
-    AdjMatrixCSR *C = csr_spmm_symbolic(A, B, work);
+    AdjMatrixCSR *C = csr_spmm_cpu_symbolic(A, B, work);
 
     memset(work, 0, B->cols*sizeof(INT));
     std::cout<<"start numeric"<<std::endl;
 
-    csr_spmm_numeric(A, B, C, work);
+    csr_spmm_cpu_numeric(A, B, C, work);
     free(work);
     return C;
 }

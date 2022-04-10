@@ -62,7 +62,7 @@ void test_A() {
     }
     std::cout << '\n' << std::endl;
 
-    serial_spmm_csr(csr_A, csr_B);
+    csr_spmm_cpu(&csr_A, &csr_B);
 
     std::cout << std::endl;
 
