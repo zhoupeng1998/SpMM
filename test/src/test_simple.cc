@@ -25,13 +25,13 @@ void test_A() {
     AdjMatrixCSR csr_A(dense_A);
     AdjMatrixCSR csr_B(dense_B);
 
-    int* A_rows = csr_A.get_rows();
-    int* A_cols = csr_A.get_cols();
-    int* A_vals = csr_A.get_vals();
+    INT* A_rows = csr_A.get_rows();
+    INT* A_cols = csr_A.get_cols();
+    INT* A_vals = csr_A.get_vals();
 
-    int* B_rows = csr_B.get_rows();
-    int* B_cols = csr_B.get_cols();
-    int* B_vals = csr_B.get_vals();
+    INT* B_rows = csr_B.get_rows();
+    INT* B_cols = csr_B.get_cols();
+    INT* B_vals = csr_B.get_vals();
 
     std::cout << "A - csr" << std::endl;
     std::cout << csr_A.num_rows() << " " << csr_A.num_size() << std::endl;
