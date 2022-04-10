@@ -1,11 +1,10 @@
 #include <iostream>
 
-#include "data.h"
 #include "test_simple.h"
 #include "adj_matrix_dense.h"
 #include "adj_matrix_csr.h"
-#include "serial_spmm.h"
-#include "serial_dense_mm.h"
+#include "spmm_serial.h"
+#include "dense_mm_serial.h"
 
 void test_A() {
     int sample_A[] = {0,2,0,1,0,
@@ -27,12 +26,12 @@ void test_A() {
     AdjMatrixCSR csr_B(dense_B);
 
     INT* A_rows = csr_A.get_rows();
-    int* A_cols = csr_A.get_cols();
-    int* A_vals = csr_A.get_vals();
+    INT* A_cols = csr_A.get_cols();
+    INT* A_vals = csr_A.get_vals();
 
     INT* B_rows = csr_B.get_rows();
-    int* B_cols = csr_B.get_cols();
-    int* B_vals = csr_B.get_vals();
+    INT* B_cols = csr_B.get_cols();
+    INT* B_vals = csr_B.get_vals();
 
     std::cout << "A - csr" << std::endl;
     std::cout << csr_A.num_rows() << " " << csr_A.num_size() << std::endl;
@@ -80,8 +79,8 @@ void test_A() {
 
     std::cout << "C - csr" << std::endl;
     INT* C_rows = csr_C.get_rows();
-    int* C_cols = csr_C.get_cols();
-    int* C_vals = csr_C.get_vals();
+    INT* C_cols = csr_C.get_cols();
+    INT* C_vals = csr_C.get_vals();
     std::cout << csr_C.num_rows() << " " << csr_C.num_size() << std::endl;
     for (INT i = 0; i <= csr_C.num_rows(); i++) {
         std::cout << C_rows[i] << " ";

@@ -10,8 +10,8 @@ private:
 
 public:
     INT* rowPtr;
-    int* colInd;
-    int* val;
+    INT* colInd;
+    INT* val;
     INT rows;
     INT cols;
     INT size;
@@ -28,8 +28,8 @@ public:
     INT num_size() const;
 
     INT* get_rows() const;
-    int* get_cols() const;
-    int* get_vals() const;
+    INT* get_cols() const;
+    INT* get_vals() const;
 
     void dump() const;
 
