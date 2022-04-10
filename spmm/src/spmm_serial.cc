@@ -2,22 +2,20 @@
 #include <stdlib.h>
 #include <string.h>
 #include <iostream>
+#include <omp.h>
 
 #include "spmm_serial.h"
 #include "adj_matrix_csr.h"
-#include <omp.h>
 
-
-
-AdjMatrixCSR *csr_spmm_symbolic(AdjMatrixCSR *A, AdjMatrixCSR *B, long *work)
+AdjMatrixCSR *csr_spmm_symbolic(AdjMatrixCSR *A, AdjMatrixCSR *B, INT *work)
 {
     INT i1, i2, i3;
     INT m = A->num_rows(), k = A->num_rows(), n = B->num_rows();
 
     AdjMatrixCSR*C=new AdjMatrixCSR(m,n);
 
-    C->rowPtr = (INT *) malloc((m+1)*sizeof(INT));
 
+    C->rowPtr = (int*) malloc((m+1)*sizeof(int));
     for (i1 = 0; i1 < m; i1++)
     {
         INT MARK=i1+1;
@@ -70,8 +68,7 @@ AdjMatrixCSR *csr_spmm_symbolic(AdjMatrixCSR *A, AdjMatrixCSR *B, long *work)
     return C;
 }
 
-
-void csr_spmm_numeric(AdjMatrixCSR *A, AdjMatrixCSR *B, AdjMatrixCSR *C, long *work)
+void csr_spmm_numeric(AdjMatrixCSR *A, AdjMatrixCSR *B, AdjMatrixCSR *C, INT *work)
 {
     INT i1, i2, i3;
     INT m = A->num_rows(), k = A->num_rows(), n = B->num_rows(), pos = 0;
