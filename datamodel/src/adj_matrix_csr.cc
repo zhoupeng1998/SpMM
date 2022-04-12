@@ -25,14 +25,9 @@ AdjMatrixCSR::AdjMatrixCSR(const AdjMatrixCSR& other)
 
 AdjMatrixCSR::AdjMatrixCSR(AdjEdges& AdjEdges) {
     rows = AdjEdges.num_vertices();
-
     cols = AdjEdges.num_vertices();
-
     size = AdjEdges.num_entries();
-
-
-
-    std::cout<<"rows "<<rows<<"   nnzs: "<<size<<std::endl;
+    //std::cout<<"rows "<<rows<<"   nnzs: "<<size<<std::endl;
 
     rowPtr = (INT*)malloc(sizeof(INT) * (rows + 1));
     colInd = (INT*)malloc(sizeof(INT) * size);
@@ -48,31 +43,6 @@ AdjMatrixCSR::AdjMatrixCSR(AdjEdges& AdjEdges) {
         rowPtr[i] += rowPtr[i-1];
     }
 }
-
-// AdjMatrixCSR::AdjMatrixCSR( AdjEdges& AdjEdges) {
-//     rows = AdjEdges.CountRows();
-
-//     cols = AdjEdges.CountRows();
-//     size = AdjEdges.CountNNZ();
-//     //std::cout<<"rows "<<rows<<"   nnzs: "<<size<<std::endl;
-//     rowPtr = (INT*)malloc(sizeof(INT) * (rows + 1));
-//     colInd = (INT*)malloc(sizeof(INT) * size);
-//     val = (INT*)malloc(sizeof(INT) * size);
-//     INT count=0;
-//     INT previous=0;
-//     rowPtr[0]=0;
-//     for (INT i = 0; i <size; i++) {
-//         val[i] = 1;
-//         colInd[i] = AdjEdges.data[i][0];
-//         if(previous != AdjEdges.data[i][1]) {
-//             rowPtr[previous+1] = count;
-//             previous++;
-//         }
-//         count++;
-//     }
-//     rowPtr[previous+1] = count;
-// }
-
 
 AdjMatrixCSR::AdjMatrixCSR(const AdjMatrixDense& matrixDense) {
     rows = matrixDense.size();
@@ -95,7 +65,10 @@ AdjMatrixCSR::AdjMatrixCSR(const AdjMatrixDense& matrixDense) {
     }
 }
 
-
+AdjMatrixCSR::AdjMatrixCSR(INT rows, INT size, INT* rowPtr, INT* colInd, INT* val)
+    :rows(rows), cols(rows), size(size), rowPtr(rowPtr), colInd(colInd), val(val)
+{
+}
 
 AdjMatrixCSR::~AdjMatrixCSR() {
     free(rowPtr);
@@ -124,16 +97,38 @@ INT* AdjMatrixCSR::get_vals() const {
 }
 
 void AdjMatrixCSR::dump() const {
-    std::cout << rows << " " << size << std::endl;
+    std::cout << "rows: " << rows << "; size:" << size << std::endl;
+    std::cout << "rowPtr: ";
     for (int i = 0; i <= rows; i++) {
         std::cout << rowPtr[i] << " ";
     }
     std::cout << std::endl;
+    std::cout << "colInd: ";
     for (int i = 0; i < size; i++) {
         std::cout << colInd[i] << " ";
     }
     std::cout << std::endl;
+    std::cout << "val: ";
     for (int i = 0; i < size; i++) {
+        std::cout << val[i] << " ";
+    }
+    std::cout << std::endl;
+}
+
+void AdjMatrixCSR::dump_front() const {
+    std::cout << "rows: " << rows << "; size:" << size << std::endl;
+    std::cout << "rowPtr: ";
+    for (int i = 0; i <= 5 && i <= rows; i++) {
+        std::cout << rowPtr[i] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "colInd: ";
+    for (int i = 0; i < 15 && i < size; i++) {
+        std::cout << colInd[i] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "val: ";
+    for (int i = 0; i <= 15 && i < size; i++) {
         std::cout << val[i] << " ";
     }
     std::cout << std::endl;
