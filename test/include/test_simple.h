@@ -2,5 +2,6 @@
 #define _TEST_SIMPLE_H_
 
 void test_A();
+void test_dense();
 
 #endif
