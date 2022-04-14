@@ -13,6 +13,7 @@ private:
 public:
     AdjMatrixDense(int size);
     AdjMatrixDense(int size, int* arr);
+    AdjMatrixDense(int size, int** matrix);
     AdjMatrixDense(const AdjEdges& edges);
     ~AdjMatrixDense();
 
@@ -22,6 +23,8 @@ public:
     int size() const;
     int* operator[](int index);
     const int* operator[](int index) const;
+
+    void dump() const;
 };
 
 #endif

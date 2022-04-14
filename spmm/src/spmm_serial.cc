@@ -168,3 +168,22 @@ AdjMatrixCSR * csr_spmm_cpu(AdjMatrixCSR *A, AdjMatrixCSR *B)
 //    std::cout << std::endl;
 //    return C;
 //}
+
+AdjMatrixDense csr_spmm_dense_cpu(AdjMatrixCSR& A, AdjMatrixCSR& B) {
+    AdjMatrixDense result(A.num_rows());
+    for (int i1 = 0; i1 < A.num_rows(); i1++) {
+        for (int i2 = A.rowPtr[i1]; i2 < A.rowPtr[i1+1]; i2++) {
+            int colA = A.colInd[i2];
+            int va = A.val[i2];
+            //assert(colA >= 0 && colA < B.num_rows());
+            for (int i3 = B.rowPtr[colA]; i3 < B.rowPtr[colA+1]; i3++) {
+                int colB = B.colInd[i3];
+                int vb = B.val[i3];
+                //assert(col >= 0 && col < B.num_rows());
+                result[i1][colB] += va * vb;
+            }
+        }
+    }
+    // set result edges
+    return result;
+}

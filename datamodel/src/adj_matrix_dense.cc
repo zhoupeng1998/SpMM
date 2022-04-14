@@ -13,6 +13,9 @@ AdjMatrixDense::AdjMatrixDense(int size) {
     matrix = (int**)malloc(sizeof(int*) * vertices);
     for (int i = 0; i < vertices; i++) {
         matrix[i] = (int*)malloc(sizeof(int) * vertices);
+        for (int j = 0; j < vertices; j++) {
+            matrix[i][j] = 0;
+        }
     }
 }
 
@@ -27,6 +30,23 @@ AdjMatrixDense::AdjMatrixDense(int size, int* arr)
         for (int j = 0; j < size; j++) {
             matrix[i][j] = arr[i*size+j];
             if (arr[i*size+j] != 0) {
+                edges++;
+            }
+        }
+    }
+}
+
+AdjMatrixDense::AdjMatrixDense(int size, int** matrix)
+    :vertices(size), edges(0), matrix(NULL)
+{
+    matrix = (int**)malloc(sizeof(int*) * vertices);
+    for (int i = 0; i < vertices; i++) {
+        matrix[i] = (int*)malloc(sizeof(int) * vertices);
+    }
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            matrix[i][j] = matrix[i][j];
+            if (matrix[i][j] != 0) {
                 edges++;
             }
         }
@@ -83,4 +103,15 @@ int* AdjMatrixDense::operator[](int index) {
 
 const int* AdjMatrixDense::operator[](int index) const {
     return matrix[index];
+}
+
+void AdjMatrixDense::dump() const {
+    std::cout << "V" << vertices << std::endl;
+    for (int i = 0; i < vertices; i++) {
+        for (int j = 0; j < vertices; j++) {
+            //std::cout << i << " " << j << std::endl;
+            std::cout << matrix[i][j] << " ";
+        }
+        std::cout << std::endl;
+    }
 }
