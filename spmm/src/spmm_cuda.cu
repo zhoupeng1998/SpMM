@@ -1,16 +1,7 @@
 #include "data.h"
 #include "adj_matrix_csr.h"
 #include "spmm_cuda.h"
-
-/**
- * example: 
- * 1d grid, 1d block
- * blocks = 128?
- * threads per block = 1024 (maximum)
- */
-#define GRIDSIZE 128
-#define BLOCKSIZE 1024
-#define SIZE GRIDSIZE*BLOCKSIZE
+#include "timer.h"
 
 __managed__ int numrows;
 
