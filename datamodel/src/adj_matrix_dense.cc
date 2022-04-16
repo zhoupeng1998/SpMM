@@ -115,3 +115,10 @@ void AdjMatrixDense::dump() const {
         std::cout << std::endl;
     }
 }
+
+void AdjMatrixDense::dump_back() const {
+    for (int i = vertices - 10; i < vertices; i++) {
+        std::cout << matrix[vertices - 1][i] << " ";
+    }
+    std::cout << std::endl;
+}

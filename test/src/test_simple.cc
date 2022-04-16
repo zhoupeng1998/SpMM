@@ -2,11 +2,14 @@
 
 #include "test_simple.h"
 #include "adj_matrix_dense.h"
+#include "adj_matrix_dense_linear.h"
 #include "adj_list.h"
 #include "adj_matrix_csr.h"
 #include "spmm_serial.h"
 #include "dense_mm_serial.h"
+#include "dense_mm_cuda.h"
 #include "spmm_cuda.h"
+#include "timer.h"
 
 void test_simple_spmm() {
     int sample_A[] = {0,2,0,1,0,
@@ -46,13 +49,22 @@ void test_testgraph_spmm_nogpu() {
     AdjMatrixCSR csr_A(dense_A);
     AdjMatrixCSR csr_B(dense_B);
 
+    clock_start_cpu();
     AdjMatrixDense dense_C = dense_mm_cpu(dense_A, dense_B);
+    clock_stop_cpu();
+    std::cout << "dense time: " << get_time_cpu() << std::endl;
+
+    clock_start_cpu();
     AdjMatrixDense sparse_C = csr_spmm_dense_cpu(csr_A, csr_B);
+    clock_stop_cpu();
+    std::cout << "sparse time: " << get_time_cpu() << std::endl;
 
     std::cout << "dense_C: " << std::endl;
-    dense_C.dump();
+    dense_C.dump_back();
+    //dense_C.dump();
     std::cout << "sparse_C: " << std::endl;
-    sparse_C.dump();
+    sparse_C.dump_back();
+    //sparse_C.dump();
 }
 
 void test_testgraph_spmm_gpu() {
@@ -65,17 +77,43 @@ void test_testgraph_spmm_gpu() {
     AdjMatrixCSR csr_A(dense_A);
     AdjMatrixCSR csr_B(dense_B);
 
-    AdjMatrixDense dense_C = dense_mm_cpu(dense_A, dense_B);
-    AdjMatrixDense sparse_C = csr_spmm_dense_cpu(csr_A, csr_B);
+    //AdjMatrixDense dense_C = dense_mm_cpu(dense_A, dense_B);
+    //AdjMatrixDense sparse_C = csr_spmm_dense_cpu(csr_A, csr_B);
+    clock_start_cpu();
     AdjMatrixDense sparse_C_gpu = csr_spmm_dense_cuda(csr_A, csr_B);
+    clock_stop_cpu();
+    std::cout << "cuda time: " << get_time_cuda() << std::endl;
+    std::cout << "gpu time: " << get_time_cpu() << std::endl;
 
-    std::cout << "dense_C: " << std::endl;
-    dense_C.dump();
-    std::cout << "sparse_C: " << std::endl;
-    sparse_C.dump();
+    //std::cout << "dense_C: " << std::endl;
+    //dense_C.dump();
+    //std::cout << "sparse_C: " << std::endl;
+    //sparse_C.dump();
     std::cout << "sparse_C_gpu: " << std::endl;
-    sparse_C_gpu.dump();
+    sparse_C_gpu.dump_back();
 }
+
+void test_testgraph_dense_gpu() {
+    AdjEdges edges_A("../../graph/test-graph-A.edges");
+    AdjEdges edges_B("../../graph/test-graph-B.edges");
+
+    AdjMatrixDense dense_A(edges_A);
+    AdjMatrixDense dense_B(edges_B);
+
+    AdjMatrixDenseLinear dense_A_linear(dense_A);
+    AdjMatrixDenseLinear dense_B_linear(dense_B);
+
+    clock_start_cpu();
+    AdjMatrixDenseLinear C = dense_mm_cuda(dense_A_linear, dense_B_linear);
+    clock_stop_cpu();
+
+    std::cout << "cuda time: " << get_time_cuda() << std::endl;
+    std::cout << "gpu time: " << get_time_cpu() << std::endl;
+
+    std::cout << "dense_C_gpu: " << std::endl;
+    C.dump_back();
+}
+
 
 void test_A() {
     int sample_A[] = {0,2,0,1,0,

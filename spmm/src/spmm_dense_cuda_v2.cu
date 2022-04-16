@@ -5,11 +5,10 @@
 #include "data.h"
 #include "adj_matrix_csr.h"
 #include "adj_matrix_dense.h"
-#include "timer.h"
 
 __managed__ int numrows;
 
-__global__ void csr_spmm_dense_kernel(INT* A_row, INT* A_col, INT* A_val, INT* B_row, INT* B_col, INT* B_val, INT* C_gpu) {
+__global__ void csr_spmm_dense_kernel_v2(INT* A_row, INT* A_col, INT* A_val, INT* B_row, INT* B_col, INT* B_val, INT* C_gpu) {
     const int tid = blockIdx.x * blockDim.x + threadIdx.x;
     for (int i = 0; i * SIZE < numrows; i++) {
         INT i1 = i * SIZE + tid;
@@ -25,7 +24,7 @@ __global__ void csr_spmm_dense_kernel(INT* A_row, INT* A_col, INT* A_val, INT* B
     }
 }
 
-AdjMatrixDense csr_spmm_dense_cuda(AdjMatrixCSR& A, AdjMatrixCSR& B) {
+AdjMatrixDense csr_spmm_dense_cuda_v2(AdjMatrixCSR& A, AdjMatrixCSR& B) {
     INT* A_row;
     INT* A_col;
     INT* A_val;
@@ -57,9 +56,7 @@ AdjMatrixDense csr_spmm_dense_cuda(AdjMatrixCSR& A, AdjMatrixCSR& B) {
     cudaMemcpy(B_val, B.get_vals(), B.num_size() * sizeof(INT), cudaMemcpyHostToDevice);
 
     // call kernel
-    clock_start_cuda();
-    csr_spmm_dense_kernel<<<GRIDSIZE, BLOCKSIZE>>>(A_row, A_col, A_val, B_row, B_col, B_val, C_gpu);
-    clock_stop_cuda();
+    csr_spmm_dense_kernel_v2<<<GRIDSIZE, BLOCKSIZE>>>(A_row, A_col, A_val, B_row, B_col, B_val, C_gpu);
 
     cudaMemcpy(C_cpu, C_gpu, numrows * numrows * sizeof(INT), cudaMemcpyDeviceToHost);
     AdjMatrixDense C(numrows, C_cpu);

@@ -27,7 +27,7 @@ void clock_stop_cpu() {
 
 double get_time_cpu() {
     double time = (timer_stop_cpu.tv_sec - timer_start_cpu.tv_sec)+ (double)(timer_stop_cpu.tv_nsec - timer_start_cpu.tv_nsec)/1e9;
-    return time * 1e9;
+    return time * 1e3;
 }
 
 void clock_start_cuda() {
@@ -43,5 +43,5 @@ void clock_stop_cuda() {
 }
 
 double get_time_cuda() {
-    return time_cuda * 1e6;
+    return time_cuda;
 }

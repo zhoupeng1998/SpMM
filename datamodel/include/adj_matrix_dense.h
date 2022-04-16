@@ -25,6 +25,7 @@ public:
     const int* operator[](int index) const;
 
     void dump() const;
+    void dump_back() const;
 };
 
 #endif
