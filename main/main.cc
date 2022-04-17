@@ -24,11 +24,8 @@ int main(void) {
     //test_cuda_full_v1();
 
     // comment out this line if you don't want to re-generate graph
-    produce_graph(8192, 500000);
-    //test_testgraph_spmm_gpu();
-    //test_testgraph_spmm_cpu();
-    //test_testgraph_dense_gpu();
-
-    test_testgraph_spmm_nogpu();
+    produce_graph(8192, 1000000);
+    test_testgraph_spmm_gpu();
+    //test_testgraph_spmm_dense_gpu();
     return 0;
 }

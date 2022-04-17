@@ -58,7 +58,7 @@ void GraphGenerator::generate() {
     int edges = nnz / 2;
     while (count < edges) {
         int i = rand() % size;
-        int j = rand() % (size - i) + i;
+        int j = rand() % size;
         if (matrix[i][j] == 0 && i != j) {
             matrix[i][j] = 1;
             matrix[j][i] = 1;

@@ -39,7 +39,7 @@ void test_simple_spmm() {
     sparse_C.dump();
 }
 
-void test_testgraph_spmm_nogpu() {
+void test_testgraph_spmm_dense_nogpu() {
     AdjEdges edges_A("../../graph/test-graph-A.edges");
     AdjEdges edges_B("../../graph/test-graph-B.edges");
 
@@ -107,18 +107,32 @@ void test_testgraph_spmm_gpu() {
     //AdjMatrixDense dense_C = dense_mm_cpu(dense_A, dense_B);
     //AdjMatrixDense sparse_C = csr_spmm_dense_cpu(csr_A, csr_B);
     clock_start_cpu();
-    //AdjMatrixDense sparse_C_gpu = csr_spmm_dense_cuda(csr_A, csr_B);
-    AdjMatrixCSR sparse_C = csr_spmm_cuda(csr_A, csr_B);
+    AdjMatrixCSR sparse_C = csr_spmm_cuda(csr_A, csr_A);
     clock_stop_cpu();
-    //std::cout << "cuda time: " << get_time_cuda() << std::endl;
+    std::cout << "cuda time: " << get_time_cuda() << std::endl;
     std::cout << "gpu time: " << get_time_cpu() << std::endl;
 
-    //std::cout << "dense_C: " << std::endl;
-    //dense_C.dump();
-    //std::cout << "sparse_C: " << std::endl;
-    //sparse_C.dump();
-    std::cout << "sparse_C_gpu: " << std::endl;
+    std::cout << "sparse_C: " << std::endl;
     sparse_C.dump_front();
+    std::cout << sparse_C.num_size() << std::endl;
+}
+
+void test_testgraph_spmm_dense_gpu() {
+    AdjEdges edges_A("../../graph/test-graph-A.edges");
+    AdjEdges edges_B("../../graph/test-graph-B.edges");
+
+    AdjMatrixCSR csr_A(edges_A);
+    AdjMatrixCSR csr_B(edges_A);
+
+    clock_start_cpu();
+    AdjMatrixDense sparse_C = csr_spmm_dense_cuda(csr_A, csr_A);
+    clock_stop_cpu();
+    std::cout << "cuda time: " << get_time_cuda() << std::endl;
+    std::cout << "gpu time: " << get_time_cpu() << std::endl;
+
+    std::cout << "sparse_C: " << std::endl;
+    sparse_C.dump_back();
+    std::cout << sparse_C.num_edges() << std::endl;
 }
 
 void test_testgraph_dense_gpu() {
