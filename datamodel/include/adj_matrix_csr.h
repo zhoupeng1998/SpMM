@@ -23,6 +23,7 @@ public:
     AdjMatrixCSR(const AdjMatrixDense& matrixDense);
     AdjMatrixCSR(AdjEdges& AdjEdges);
     AdjMatrixCSR(INT rows, INT size, INT* rowPtr, INT* colInd, INT* val);
+    AdjMatrixCSR(const char* symbolicfile);
     ~AdjMatrixCSR();
 
     INT num_rows() const;
@@ -34,6 +35,7 @@ public:
 
     void dump() const;
     void dump_front() const;
+    void store_symbolic(const char* filename);
 
     AdjMatrixCSR& operator=(AdjMatrixCSR&& other);
 };

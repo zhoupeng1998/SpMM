@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 
 #include <iostream>
@@ -73,6 +74,28 @@ AdjMatrixCSR::AdjMatrixCSR(INT rows, INT size, INT* rowPtr, INT* colInd, INT* va
 {
 }
 
+AdjMatrixCSR::AdjMatrixCSR(const char* symbolicfile)
+    :rows(0), cols(0), size(0), rowPtr(NULL), colInd(NULL), val(NULL)
+{
+    if (symbolicfile == NULL) {
+        symbolicfile = "../../graph/graph-rowptr.txt";
+    }
+    FILE* file = fopen(symbolicfile, "r");
+    if (file == NULL) {
+        perror("Output file open error!");
+        exit(-1);
+    }
+    fscanf(file, "%ld", &rows);
+    cols = rows;
+    rowPtr = (INT*)malloc(sizeof(INT) * (rows + 1));
+    for (INT i = 0; i <= rows; i++) {
+        fscanf(file, "%ld", &rowPtr[i]);
+    }
+    size = rowPtr[rows];
+    colInd = (INT*)malloc(sizeof(INT) * size);
+    val = (INT*)malloc(sizeof(INT) * size);
+}
+
 AdjMatrixCSR::~AdjMatrixCSR() {
     free(rowPtr);
     free(colInd);
@@ -135,6 +158,21 @@ void AdjMatrixCSR::dump_front() const {
         std::cout << val[i] << " ";
     }
     std::cout << std::endl;
+}
+
+void AdjMatrixCSR::store_symbolic(const char* filename) {
+    if (filename == NULL) {
+        filename = "../../graph/graph-rowptr.txt";
+    }
+    FILE* file = fopen(filename, "w");
+    if (file == NULL) {
+        perror("Output file open error!");
+        exit(-1);
+    }
+    fprintf(file, "%d\n", rows);
+    for (INT i = 0; i <= rows; i++) {
+        fprintf(file, "%d\n", rowPtr[i]);
+    }
 }
 
 AdjMatrixCSR& AdjMatrixCSR::operator=(AdjMatrixCSR&& other) {
