@@ -7,22 +7,22 @@
 class AdjMatrixDense
 {
 private:
-    int vertices;
-    int edges;
-    int** matrix;
+    INT vertices;
+    INT edges;
+    INT** matrix;
 public:
-    AdjMatrixDense(int size);
-    AdjMatrixDense(int size, int* arr);
-    AdjMatrixDense(int size, int** matrix);
+    AdjMatrixDense(INT size);
+    AdjMatrixDense(INT size, INT* arr);
+    AdjMatrixDense(INT size, INT** matrix);
     AdjMatrixDense(const AdjEdges& edges);
     ~AdjMatrixDense();
 
-    int num_vertices() const;
-    int num_edges() const;
-    void set_edges(int edges);
-    int size() const;
-    int* operator[](int index);
-    const int* operator[](int index) const;
+    INT num_vertices() const;
+    INT num_edges() const;
+    void set_edges(INT edges);
+    INT size() const;
+    INT* operator[](INT index);
+    const INT* operator[](INT index) const;
 
     void dump() const;
     void dump_back() const;

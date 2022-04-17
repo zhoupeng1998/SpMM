@@ -11,8 +11,8 @@ private:
     int edges;
     int* matrix;
 public:
-    AdjMatrixDenseLinear(int size);
-    AdjMatrixDenseLinear(int size, int* arr);
+    AdjMatrixDenseLinear(INT size);
+    AdjMatrixDenseLinear(INT size, INT* arr);
     AdjMatrixDenseLinear(const AdjMatrixDense& dense);
     ~AdjMatrixDenseLinear();
 

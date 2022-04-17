@@ -10,8 +10,8 @@
  * blocks = 128?
  * threads per block = 1024 (maximum)
  */
-#define GRIDSIZE 8
-#define BLOCKSIZE 512
+#define GRIDSIZE 128
+#define BLOCKSIZE 1024
 #define SIZE GRIDSIZE*BLOCKSIZE
 
 AdjMatrixCSR csr_spmm_cuda(AdjMatrixCSR& A, AdjMatrixCSR& B);

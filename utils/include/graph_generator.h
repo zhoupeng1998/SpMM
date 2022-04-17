@@ -4,18 +4,18 @@
 #include "adj_matrix_dense.h"
 
 class GraphGenerator {
-    int size;
-    int nnz;
-    int **matrix;
+    INT size;
+    INT nnz;
+    INT **matrix;
 
     void alloc();
     void dealloc();
     void clear();
 public:
-    GraphGenerator(int size, int nnz);
+    GraphGenerator(INT size, INT nnz);
     ~GraphGenerator();
 
-    void resize(int size, int nnz);
+    void resize(INT size, INT nnz);
     void generate();
     AdjMatrixDense get_graph_dense();
     void store_graph(const char *filename);

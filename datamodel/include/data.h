@@ -3,6 +3,6 @@
 
 #include <stdint.h>
 
-#define INT int
+#define INT int64_t
 
 #endif

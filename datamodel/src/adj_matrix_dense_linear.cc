@@ -6,7 +6,7 @@
 #include "adj_matrix_dense.h"
 #include "adj_matrix_dense_linear.h"
 
-AdjMatrixDenseLinear::AdjMatrixDenseLinear(int size)
+AdjMatrixDenseLinear::AdjMatrixDenseLinear(INT size)
 :vertices(size), edges(0), matrix(NULL) {
     matrix = (int*)malloc(sizeof(int) * size * size);
     for (int i = 0; i < size * size; i++) {
@@ -14,7 +14,7 @@ AdjMatrixDenseLinear::AdjMatrixDenseLinear(int size)
     }
 }
 
-AdjMatrixDenseLinear::AdjMatrixDenseLinear(int size, int* arr)
+AdjMatrixDenseLinear::AdjMatrixDenseLinear(INT size, INT* arr)
 :vertices(size), edges(0), matrix(NULL) {
     matrix = (int*)malloc(sizeof(int) * size * size);
     for (int i = 0; i < size * size; i++) {

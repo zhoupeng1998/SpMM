@@ -10,15 +10,16 @@
 #include "dense_mm_cuda.h"
 #include "spmm_cuda.h"
 #include "timer.h"
+#include "data.h"
 
 void test_simple_spmm() {
-    int sample_A[] = {0,2,0,1,0,
+    INT sample_A[] = {0,2,0,1,0,
                       1,0,3,0,0,
                       0,0,0,0,1,
                       0,0,0,0,0,
                       1,1,0,0,0};
 
-    int sample_B[] = {0,1,0,0,2,
+    INT sample_B[] = {0,1,0,0,2,
                       2,0,0,1,1,
                       1,0,0,3,0,
                       0,0,2,0,0,
@@ -94,15 +95,18 @@ void test_testgraph_spmm_cpu() {
 }
 
 void test_testgraph_spmm_gpu() {
-    //AdjEdges edges_A("../../graph/graph500-scale18-ef16_adj.edges.edges",8192);
+    AdjEdges edges_A("../../graph/graph500-scale18-ef16_adj.edges",30000);
     //AdjEdges edges_B("../../graph/graph500-scale18-ef16_adj.edges.edges",8192);
 
-    AdjEdges edges_A("../../graph/test-graph-A.edges");
-    // AdjMatrixDense dense_A(edges_A);
+    //AdjEdges edges_A("../../graph/test-graph-A.edges");
+    //AdjMatrixDense dense_A(edges_A);
     // AdjMatrixDense dense_B(edges_B);
 
     AdjMatrixCSR csr_A(edges_A);
-    AdjMatrixCSR csr_B(edges_A);
+    //AdjMatrixCSR csr_B(edges_A);
+
+    INT* ptr= csr_A.rowPtr;
+    printf("%ld\n",ptr[3]);
 
     //AdjMatrixDense dense_C = dense_mm_cpu(dense_A, dense_B);
     //AdjMatrixDense sparse_C = csr_spmm_dense_cpu(csr_A, csr_B);
@@ -158,13 +162,13 @@ void test_testgraph_dense_gpu() {
 
 
 void test_A() {
-    int sample_A[] = {0,2,0,1,0,
+    INT sample_A[] = {0,2,0,1,0,
                       1,0,3,0,0,
                       0,0,0,0,1,
                       0,0,0,0,0,
                       1,1,0,0,0};
 
-    int sample_B[] = {0,1,0,0,2,
+    INT sample_B[] = {0,1,0,0,2,
                       2,0,0,1,1,
                       1,0,0,3,0,
                       0,0,2,0,0,

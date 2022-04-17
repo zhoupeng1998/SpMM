@@ -5,7 +5,7 @@
 
 #include "graph_generator.h"
 
-GraphGenerator::GraphGenerator(int size, int nnz)
+GraphGenerator::GraphGenerator(INT size, INT nnz)
 : size(size), nnz(nnz) {
     alloc();
 }
@@ -15,16 +15,16 @@ GraphGenerator::~GraphGenerator() {
 }
 
 void GraphGenerator::alloc() {
-    matrix = (int**)malloc(sizeof(int*) * size);
-    for (int i = 0; i < size; i++) {
-        matrix[i] = (int*)malloc(sizeof(int) * size);
-        memset(matrix[i], 0, sizeof(int) * size);
+    matrix = (INT**)malloc(sizeof(INT*) * size);
+    for (INT i = 0; i < size; i++) {
+        matrix[i] = (INT*)malloc(sizeof(INT) * size);
+        memset(matrix[i], 0, sizeof(INT) * size);
     }
 }
 
 void GraphGenerator::dealloc() {
     if (matrix != NULL) {
-        for (int i = 0; i < size; i++) {
+        for (INT i = 0; i < size; i++) {
             if (matrix[i] != NULL) {
                 free(matrix[i]);
             }
@@ -34,12 +34,12 @@ void GraphGenerator::dealloc() {
 }
 
 void GraphGenerator::clear() {
-    for (int i = 0; i < size; i++) {
-        memset(matrix[i], 0, sizeof(int) * size);
+    for (INT i = 0; i < size; i++) {
+        memset(matrix[i], 0, sizeof(INT) * size);
     }
 }
 
-void GraphGenerator::resize(int size, int nnz) {
+void GraphGenerator::resize(INT size, INT nnz) {
     this->size = size;
     this->nnz = nnz;
     dealloc();
@@ -54,11 +54,11 @@ void GraphGenerator::generate() {
     matrix[size-1][size-2] = 1;
     matrix[size-2][size-1] = 1;
 
-    int count = 1;
-    int edges = nnz / 2;
+    INT count = 1;
+    INT edges = nnz / 2;
     while (count < edges) {
-        int i = rand() % size;
-        int j = rand() % size;
+        INT i = rand() % size;
+        INT j = rand() % size;
         if (matrix[i][j] == 0 && i != j) {
             matrix[i][j] = 1;
             matrix[j][i] = 1;
@@ -80,8 +80,8 @@ void GraphGenerator::store_graph(const char* filename) {
         perror("Output file open error!");
         exit(-1);
     }
-    for (int i = 0; i < size; i++) {
-        for (int j = 0; j < size; j++) {
+    for (INT i = 0; i < size; i++) {
+        for (INT j = 0; j < size; j++) {
             if (matrix[i][j] == 1) {
                 /*
                 if (i > j) {
@@ -90,7 +90,7 @@ void GraphGenerator::store_graph(const char* filename) {
                     fprintf(file, "%d %d\n", j+1, i+1);
                 }
                 */
-                 fprintf(file, "%d %d\n", j+1,i+1);
+                 fprintf(file, "%ld %ld\n", j+1,i+1);
             }
         }
     }
