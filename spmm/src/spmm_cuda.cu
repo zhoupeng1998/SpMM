@@ -5,32 +5,76 @@
 
 __managed__ int numrows;
 
-__global__ void csr_spmm_symbolic(INT* A_row, INT* A_col, INT* A_val, INT* B_row, INT* B_col, INT* B_val, INT* C_row, INT* work) {
-    const int tid = blockIdx.x * blockDim.x + threadIdx.x;
-    //__shared__ INT work[BLOCKSIZE];
-    for (int i = 0; i < numrows; i += SIZE) {
-        INT i1 = i * SIZE + tid;
-        if (i1 >= numrows) break;
-        INT MARK = i1 + 1;
-        INT count = 0;
-        for (INT i2 = A_row[i1]; i2 < A_row[i1+1]; i2++) {
-            INT j = A_col[i2];
-            // assert(j >= 0 && j < numrows);
-            for (INT i3 = B_row[j]; i3 < B_row[j+1]; i3++) {
-                INT col = B_col[i3];
-                // assert(col >= 0 && col < numrows);
-                if (work[col] != MARK) {
-                    count++;
-                    work[col] = MARK;
-                }
-            }
-        }
-        C_row[i1+1] = count;
-    }
-    // prefix sum at host
+__global__ void csr_spmm_symbolic(INT* A_row, INT* A_col, INT* A_val, INT* B_row, INT* B_col, INT* B_val, INT* C_row, INT* work,INT colNum){
+
+	const int laneId = threadIdx.x;
+	const int warpId = blockIdx.x;
+	
+	int* nonzeros;
+	int rowAStart, rowAEnd, rowBStart, rowBEnd;
+	int nnz;
+	int colC;
+	
+	extern __shared__ int nzCount[];
+	
+	nonzeros = &work[warpId * colNum];
+	
+	// Iterate through each assigned row in A.
+	for(int rowA = warpId; rowA < colNum; rowA += gridDim.x)
+	{
+		rowAStart = A_row[rowA];
+		rowAEnd =A_row[rowA + 1];
+		// There are no non-zeros in this row so continue
+		if(rowAStart == rowAEnd)
+		{
+			if (laneId == 0)
+				C_row[rowA] = 0;
+			__syncthreads();
+			continue;
+		}
+
+		// Reset the nz counts
+		nzCount[laneId] = 0;
+		
+		// reset the nonzeros table
+		for (int i=laneId; i<colNum; i+= warpSize)
+		{
+			nonzeros[i] = 0;
+		}
+		__syncthreads();
+		
+		for(int i = rowAStart; i < rowAEnd; ++i)
+		{
+			rowBStart = B_row[A_col[i]];
+			rowBEnd =B_row[A_col[i]+1];
+
+			for (int j = rowBStart + laneId; j < rowBEnd; j += warpSize)
+			{
+				colC = B_col[j];
+				nzCount[laneId] += nonzeros[colC] == 0;
+				nonzeros[colC] = 1;
+			}
+			__syncthreads();
+		}
+
+		if(laneId == 0)
+		{
+			nnz = nzCount[0];
+			for(int i = 1; i < warpSize; ++i)
+			{
+				nnz += nzCount[i];
+			}
+			C_row[rowA] = nnz;
+
+		}
+		
+		__syncthreads();
+	}
+
 }
 
 AdjMatrixCSR csr_spmm_cuda(AdjMatrixCSR& A, AdjMatrixCSR& B) {
+
     INT* A_row;
     INT* A_col;
     INT* A_val;
@@ -51,7 +95,7 @@ AdjMatrixCSR csr_spmm_cuda(AdjMatrixCSR& A, AdjMatrixCSR& B) {
     cudaMalloc(&B_col, B.num_size() * sizeof(INT));
     cudaMalloc(&B_val, B.num_size() * sizeof(INT));
     cudaMalloc(&C_row_gpu, (A.num_rows() + 1) * sizeof(INT));
-    cudaMalloc(&work, B.num_rows() * sizeof(INT));
+    cudaMalloc(&work, GRIDSIZE*B.num_rows() * sizeof(INT));
 
     cudaMemcpy(A_row, A.get_rows(), (A.num_rows() + 1) * sizeof(INT), cudaMemcpyHostToDevice);
     cudaMemcpy(A_col, A.get_cols(), A.num_size() * sizeof(INT), cudaMemcpyHostToDevice);
@@ -61,8 +105,13 @@ AdjMatrixCSR csr_spmm_cuda(AdjMatrixCSR& A, AdjMatrixCSR& B) {
     cudaMemcpy(B_val, B.get_vals(), B.num_size() * sizeof(INT), cudaMemcpyHostToDevice);
 
     // call kernel
-    csr_spmm_symbolic<<<GRIDSIZE, BLOCKSIZE>>>(A_row, A_col, A_val, B_row, B_col, B_val, C_row, work);
-    cudaMemcpy(C_row, C_row_gpu, (A.num_rows() + 1) * sizeof(INT), cudaMemcpyHostToDevice);
+    INT numrow=A.num_rows();
+
+	clock_start_cuda();
+    csr_spmm_symbolic<<<GRIDSIZE, BLOCKSIZE,numrow>>>(A_row, A_col, A_val, B_row, B_col, B_val, C_row_gpu, work,numrow);
+	clock_stop_cuda();
+
+    cudaMemcpy(C_row, C_row_gpu, (A.num_rows() + 1) * sizeof(INT), cudaMemcpyDeviceToHost);
     // prefix sum
     C_row[0] = 0;
     for (INT i = 0; i < numrows; i++) {

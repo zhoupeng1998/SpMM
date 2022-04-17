@@ -83,7 +83,14 @@ void GraphGenerator::store_graph(const char* filename) {
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < size; j++) {
             if (matrix[i][j] == 1) {
-                fprintf(file, "%d %d\n", i+1, j+1);
+                /*
+                if (i > j) {
+                    fprintf(file, "%d %d\n", i+1, j+1);
+                } else {
+                    fprintf(file, "%d %d\n", j+1, i+1);
+                }
+                */
+                 fprintf(file, "%d %d\n", j+1,i+1);
             }
         }
     }

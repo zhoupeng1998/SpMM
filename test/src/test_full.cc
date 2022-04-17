@@ -17,6 +17,7 @@
 #include "test_full.h"
 
 #define PATH_GRAPH16 "../../graph/graph500-scale18-ef16_adj.edges"
+//#define PATH_GRAPH16 "../../graph/test.edges"
 
 void test_cpu_full_v1() {
     AdjEdges dataset = AdjEdges(PATH_GRAPH16);
