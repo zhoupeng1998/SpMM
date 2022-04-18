@@ -88,8 +88,8 @@ void test_testgraph_spmm_cpu() {
     clock_stop_cpu();
 
     std::cout << "sparse time: " << get_time_cpu() << std::endl;
-    std::cout << "dense_C: " << std::endl;
-    std::cout << "sparse_C: " << std::endl;
+    //std::cout << "dense_C: " << std::endl;
+    //std::cout << "sparse_C: " << std::endl;
     sparse_C->dump_front();
     //sparse_C.dump();
 }
@@ -106,19 +106,19 @@ void test_testgraph_spmm_gpu() {
     //AdjMatrixCSR csr_B(edges_A);
 
     INT* ptr= csr_A.rowPtr;
-    printf("%ld\n",ptr[3]);
+    //printf("%ld\n",ptr[3]);
 
     //AdjMatrixDense dense_C = dense_mm_cpu(dense_A, dense_B);
     //AdjMatrixDense sparse_C = csr_spmm_dense_cpu(csr_A, csr_B);
     clock_start_cpu();
     AdjMatrixCSR sparse_C = csr_spmm_cuda(csr_A, csr_A);
     clock_stop_cpu();
-    std::cout << "cuda time: " << get_time_cuda() << std::endl;
-    std::cout << "gpu time: " << get_time_cpu() << std::endl;
+    //std::cout << "cuda time: " << get_time_cuda() << std::endl;
+    std::cout << "symbolic time gpu: " << get_time_cpu() << std::endl;
 
     std::cout << "sparse_C: " << std::endl;
     sparse_C.dump_front();
-    std::cout << sparse_C.num_size() << std::endl;
+    //std::cout << sparse_C.num_size() << std::endl;
 }
 
 void test_testgraph_spmm_dense_gpu() {

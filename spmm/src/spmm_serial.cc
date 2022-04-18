@@ -3,7 +3,7 @@
 #include <string.h>
 #include <iostream>
 #include <omp.h>
-
+#include <time.h>
 #include "spmm_serial.h"
 #include "adj_matrix_csr.h"
 
@@ -51,17 +51,19 @@ AdjMatrixCSR *csr_spmm_cpu_symbolic(AdjMatrixCSR *A, AdjMatrixCSR *B, INT *work)
     C->cols = n;
     C->size = C->rowPtr[m];
     C->colInd = (INT *) malloc(C->size*sizeof(INT));
-    if(C->colInd){
-        std::cout<<"malloc C->colInd success the required size  colInd"<< C->size<<std::endl;
-    }else{
-        std::cout<<"malloc C->colInd failed, the required size  colInd"<< C->size<<std::endl;
-    }
+    // if(C->colInd){
+    //     std::cout<<"malloc C->colInd success the required size  colInd"<< C->size<<std::endl;
+    // }else{
+    //     std::cout<<"malloc C->colInd failed, the required size  colInd"<< C->size<<std::endl;
+    // }
     C->val =  (INT *) malloc(C->size*sizeof(INT));
-    if(C->val){
-        std::cout<<"malloc C->colInd success the required size val"<< C->size<<std::endl;
-    }else{
-        std::cout<<"malloc C->colInd failed, the required size val"<< C->size<<std::endl;
-    }
+
+    
+    // if(C->val){
+    //     std::cout<<"malloc C->colInd success the required size val"<< C->size<<std::endl;
+    // }else{
+    //     std::cout<<"malloc C->colInd failed, the required size val"<< C->size<<std::endl;
+    // }
 
     std::cout<<"finished symbolic"<<std::endl;
 
@@ -113,11 +115,23 @@ void csr_spmm_cpu_numeric(AdjMatrixCSR *A, AdjMatrixCSR *B, AdjMatrixCSR *C, INT
 
 AdjMatrixCSR * csr_spmm_cpu(AdjMatrixCSR *A, AdjMatrixCSR *B)
 {
+    struct timespec start,end;
+    double time ;
+
     INT *work = (INT *) calloc(B->rows, sizeof(INT));
+    
+    if(clock_gettime(CLOCK_REALTIME,&start)==-1){perror("time error");}
+
     AdjMatrixCSR *C = csr_spmm_cpu_symbolic(A, B, work);
 
+    if(clock_gettime(CLOCK_REALTIME,&end)==-1){perror("time error");}
+
+    time = (end.tv_sec-start.tv_sec)+(double)(end.tv_nsec-start.tv_nsec)/1e9;
+
+    printf("symbolic time CPU: %f ns\n", time*1e3 );
+
     memset(work, 0, B->cols*sizeof(INT));
-    std::cout<<"start numeric"<<std::endl;
+   
 
     csr_spmm_cpu_numeric(A, B, C, work);
     free(work);
