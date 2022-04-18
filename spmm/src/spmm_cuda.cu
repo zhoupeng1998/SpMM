@@ -72,7 +72,7 @@ __global__ void GetNNZ(INT* A_row, INT* A_col, INT* A_val, INT* B_row, INT* B_co
 		if(laneId == 0)
 		{
 			nnz = nzCount[0];
-			for(INT i = 1; i < warpSize; ++i)
+			for(INT i = 1; i < BLOCKSIZE; ++i)
 			{
 				nnz += nzCount[i];
 			}

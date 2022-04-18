@@ -95,10 +95,10 @@ void test_testgraph_spmm_cpu() {
 }
 
 void test_testgraph_spmm_gpu() {
-    AdjEdges edges_A("../../graph/graph500-scale18-ef16_adj.edges",30000);
+    //AdjEdges edges_A("../../graph/graph500-scale18-ef16_adj.edges",30000);
     //AdjEdges edges_B("../../graph/graph500-scale18-ef16_adj.edges.edges",8192);
 
-    //AdjEdges edges_A("../../graph/test-graph-A.edges");
+    AdjEdges edges_A("../../graph/test-graph-A.edges");
     //AdjMatrixDense dense_A(edges_A);
     // AdjMatrixDense dense_B(edges_B);
 
