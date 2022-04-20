@@ -123,7 +123,7 @@ INT* AdjMatrixCSR::get_vals() const {
 }
 
 void AdjMatrixCSR::dump() const {
-    std::cout << "rows: " << rows << "; size:" << size << std::endl;
+    std::cout << "rows: " << rows<< std::endl;// << "; size:" << size << std::endl;
     std::cout << "rowPtr: ";
     for (int i = 0; i <= rows; i++) {
         std::cout << rowPtr[i] << " ";
@@ -142,21 +142,21 @@ void AdjMatrixCSR::dump() const {
 }
 
 void AdjMatrixCSR::dump_front() const {
-    std::cout << "rows: " << rows << "; size:" << size << std::endl;
-    std::cout << "rowPtr: ";
-    for (int i = 0; i <= 5 && i <= rows; i++) {
-        std::cout << rowPtr[i] << " ";
-    }
-    std::cout << std::endl;
-    std::cout << "colInd: ";
-    for (int i = 0; i < 15 && i < size; i++) {
-        std::cout << colInd[i] << " ";
-    }
-    std::cout << std::endl;
-    std::cout << "val: ";
-    for (int i = 0; i <= 15 && i < size; i++) {
-        std::cout << val[i] << " ";
-    }
+    std::cout << "rows: " << rows<< std::endl ;//<< "; size:" << size << std::endl;
+    // std::cout << "rowPtr: ";
+    // for (int i = 0; i <= 5 && i <= rows; i++) {
+    //     std::cout << rowPtr[i] << " ";
+    // }
+    // std::cout << std::endl;
+    // std::cout << "colInd: ";
+    // for (int i = 0; i < 15 && i < size; i++) {
+    //     std::cout << colInd[i] << " ";
+    // }
+    // std::cout << std::endl;
+    // std::cout << "val: ";
+    // for (int i = 0; i <= 15 && i < size; i++) {
+    //     std::cout << val[i] << " ";
+    // }
     std::cout << std::endl;
 }
 
