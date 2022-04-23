@@ -168,6 +168,10 @@ AdjMatrixCSR csr_spmm_cuda(AdjMatrixCSR& A, AdjMatrixCSR& B) {
     INT* B_val;
     INT* C_row;
     INT* C_row_gpu;
+	INT* C_col;
+	INT* C_col_gpu;
+	INT* C_val;
+	INT* C_val_gpu;
     INT* work;
     
     numrows = A.num_rows();
@@ -200,6 +204,14 @@ AdjMatrixCSR csr_spmm_cuda(AdjMatrixCSR& A, AdjMatrixCSR& B) {
         C_row[i+1] += C_row[i];
     }
 
+	cudaMalloc(&C_col_gpu, C_row[numrows+1] * sizeof(INT));
+	cudaMalloc(&C_val_gpu, C_row[numrows+1] * sizeof(INT));
+	
+
+
+	GetVals<<<GRIDSIZE, BLOCKSIZE>>>(A_row, A_col, A_val, B_row, B_col, B_val, C_row_gpu,C_col_gpu,C_val_gpu, work,numrows);
+	cudaMemcpy(C_col, C_col_gpu, (C_row[numrows+1] * sizeof(INT), cudaMemcpyDeviceToHost);
+	cudaMemcpy(C_val, C_val_gpu, (C_row[numrows+1] * sizeof(INT), cudaMemcpyDeviceToHost);
 
     // cudaMemcpy to host
     AdjMatrixCSR result(A.num_rows(), 0, C_row, NULL, NULL);
