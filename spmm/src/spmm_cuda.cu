@@ -84,6 +84,81 @@ __global__ void GetNNZ(INT* A_row, INT* A_col, INT* A_val, INT* B_row, INT* B_co
 	}
 }
 
+__global__ void GetVals(INT* A_row, INT* A_col, INT* A_val, INT* B_row, INT* B_col, INT* B_val, 
+INT* C_row, INT* C_col, INT* C_val, int* indexTable)
+{
+	const int laneId = threadIdx.x;
+	const int bloackId = blockIdx.x;
+	
+	__shared__ unsigned int back;
+	
+	int rowAStart; // The index into A.jc and A.val
+	int rowAEnd; // The boundary index for A
+	float valA; // The value of the current A nonzero
+	int rowBStart; // The index into B.jc and B.val
+	int rowBEnd; // The boundary index for B
+	int colB; // The current column in B being used
+	int rowCStart; // The index into C.jc and C.val
+	int rowCEnd; // The boundary index for C
+	int hash; // The calculated hash value
+	int i, j; // Loop iterators
+
+	// Set the global hash table to point to the space
+	// used by this warp
+	int* gColHashTable;
+	float* gValHashTable;
+	int globalEntries;
+	
+	indexTable = &indexTable[C.cols * blockId];
+	
+	if(laneId == 0)
+		back = 0;
+	
+	for(int rowA = blockId; rowA < numrows; rowA += gridDim.x)
+	{
+		rowAStart = A_row[rowA];
+		rowAEnd = A_row[rowA + 1];
+		for(i = laneId; i < numrows; ++i)
+		{
+			indexTable[i] = -1;
+		}
+		__syncthreads();
+
+		// Set the location of the global hash table
+		rowCStart = C_row[rowA];
+		rowCEnd = C_row[rowA + 1];
+		globalEntries = rowCEnd - rowCStart;
+		gColHashTable = &C_col[rowCStart];
+		gValHashTable = &C_val[rowCStart];
+		for(i = rowAStart; i < rowAEnd; ++i)
+		{
+			valA = A_val[i];
+			rowBStart = B_row[A_col[i]];
+			rowBEnd = B_row[A_col[i] + 1];
+			int curIdx;
+			int* storeInt;
+			float* storeFloat;
+			float valB;
+			for(j = rowBStart + laneId; __any(j < rowBEnd); j += warpSize)
+			{
+				colB = j < rowBEnd ? B_col[j] : -1;
+				curIdx = colB == -1 ? -1 : indexTable[colB];
+				hash = colB != -1 && curIdx == -1 ? atomicInc(&back, globalEntries - 1) : curIdx;
+				storeInt = hash == -1 ? &hash : &indexTable[colB];
+				*storeInt = hash;
+				storeInt = hash == -1 ? &colB : &gColHashTable[hash];
+				*storeInt = colB;
+				valB = colB == -1 ? 1 : B_val[j];
+				storeFloat = hash == -1 ? &valA : &gValHashTable[hash];
+				*storeFloat += valB * valA;
+			}
+		} // For each nonzero in the A row
+	} // For each assigned row in A
+}
+
+
+
+
 AdjMatrixCSR csr_spmm_cuda(AdjMatrixCSR& A, AdjMatrixCSR& B) {
     INT* A_row;
     INT* A_col;
