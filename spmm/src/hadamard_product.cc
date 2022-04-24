@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "hadamard_product.h"
@@ -8,6 +9,9 @@ AdjMatrixDense hadamard_product(AdjMatrixDense &A, AdjMatrixDense &B) {
     for (INT i = 0; i < A.size(); i++) {
         for (INT j = 0; j < A.size(); j++) {
             C[i][j] = A[i][j] * B[i][j];
+            if (C[i][j] != 0) {
+                C.add_edge();
+            }
         }
     }
     return C;
@@ -41,7 +45,7 @@ AdjMatrixCSR hadamard_product(AdjMatrixCSR &A, AdjMatrixCSR &B) {
     }
     C_rowptr[0] = 0;
     for (INT i = 0; i < A.num_rows(); i++) {
-        C_rowptr[i+1] = C_rowptr[i];
+        C_rowptr[i+1] += C_rowptr[i];
     }
     INT* C_colInd = (INT*)malloc(C_rowptr[A.num_rows()] * sizeof(INT));
     INT* C_val = (INT*)malloc(C_rowptr[A.num_rows()] * sizeof(INT));
@@ -59,14 +63,13 @@ AdjMatrixCSR hadamard_product(AdjMatrixCSR &A, AdjMatrixCSR &B) {
                 ib++;
             } else {
                 // ca == cb
-                ia++;
-                ib++;
                 C_colInd[count] = ca;
                 C_val[count] = A.val[ia] * A.val[ib];
                 count++;
+                ia++;
+                ib++;
             }
         }
-        C_rowptr[row+1] = row_count;
     }
     return AdjMatrixCSR(A.num_rows(), C_rowptr[A.num_rows()], C_rowptr, C_colInd, C_val);
 }

@@ -14,6 +14,7 @@
 
 #include "test_full.h"
 #include "test_generate_graph.h"
+#include "test_hadamard.h"
 
 int main(void) {
     // full graph
@@ -24,9 +25,13 @@ int main(void) {
     //test_cuda_full_v1();
 
     // comment out this line if you don't want to re-generate graph
+    /*
     produce_graph(8192, 1000000);
     test_testgraph_spmm_gpu();
     test_testgraph_spmm_cpu();
+    */
     //test_testgraph_spmm_dense_gpu();
+    
+    test_hadamard();
     return 0;
 }

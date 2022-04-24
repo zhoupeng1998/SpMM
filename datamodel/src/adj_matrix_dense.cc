@@ -93,6 +93,10 @@ void AdjMatrixDense::set_edges(INT edges) {
     this->edges = edges;
 }
 
+void AdjMatrixDense::add_edge() {
+    edges++;
+}
+
 INT AdjMatrixDense::size() const {
     return vertices;
 }

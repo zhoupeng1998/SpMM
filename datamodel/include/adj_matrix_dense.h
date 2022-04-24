@@ -20,6 +20,7 @@ public:
     INT num_vertices() const;
     INT num_edges() const;
     void set_edges(INT edges);
+    void add_edge();
     INT size() const;
     INT* operator[](INT index);
     const INT* operator[](INT index) const;
