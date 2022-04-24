@@ -85,36 +85,36 @@ __global__ void GetNNZ(INT* A_row, INT* A_col, INT* A_val, INT* B_row, INT* B_co
 }
 
 __global__ void GetVals(INT* A_row, INT* A_col, INT* A_val, INT* B_row, INT* B_col, INT* B_val, 
-INT* C_row, INT* C_col, INT* C_val, int* indexTable)
+INT* C_row, INT* C_col, INT* C_val, INT* indexTable)
 {
 	const int laneId = threadIdx.x;
-	const int bloackId = blockIdx.x;
+	const int blockId = blockIdx.x;
 	
 	__shared__ unsigned int back;
 	
-	int rowAStart; // The index into A.jc and A.val
-	int rowAEnd; // The boundary index for A
-	float valA; // The value of the current A nonzero
-	int rowBStart; // The index into B.jc and B.val
-	int rowBEnd; // The boundary index for B
-	int colB; // The current column in B being used
-	int rowCStart; // The index into C.jc and C.val
-	int rowCEnd; // The boundary index for C
-	int hash; // The calculated hash value
-	int i, j; // Loop iterators
+	INT rowAStart; // The index into A.jc and A.val
+	INT rowAEnd; // The boundary index for A
+	INT valA; // The value of the current A nonzero
+	INT rowBStart; // The index into B.jc and B.val
+	INT rowBEnd; // The boundary index for B
+	INT colB; // The current column in B being used
+	INT rowCStart; // The index into C.jc and C.val
+	INT rowCEnd; // The boundary index for C
+	INT hash; // The calculated hash value
+	INT i, j; // Loop iterators
 
 	// Set the global hash table to point to the space
 	// used by this warp
-	int* gColHashTable;
-	float* gValHashTable;
-	int globalEntries;
+	INT* gColHashTable;
+	INT* gValHashTable;
+	INT globalEntries;
 	
-	indexTable = &indexTable[C.cols * blockId];
+	indexTable = &indexTable[blockId * numrows];
 	
 	if(laneId == 0)
 		back = 0;
 	
-	for(int rowA = blockId; rowA < numrows; rowA += gridDim.x)
+	for(INT rowA = blockId; rowA < numrows; rowA += gridDim.x)
 	{
 		rowAStart = A_row[rowA];
 		rowAEnd = A_row[rowA + 1];
@@ -135,10 +135,10 @@ INT* C_row, INT* C_col, INT* C_val, int* indexTable)
 			valA = A_val[i];
 			rowBStart = B_row[A_col[i]];
 			rowBEnd = B_row[A_col[i] + 1];
-			int curIdx;
-			int* storeInt;
-			float* storeFloat;
-			float valB;
+			INT curIdx;
+			INT* storeInt;
+			INT* storeFloat;
+			INT valB;
 			for(j = rowBStart + laneId; __any(j < rowBEnd); j += warpSize)
 			{
 				colB = j < rowBEnd ? B_col[j] : -1;
@@ -204,14 +204,17 @@ AdjMatrixCSR csr_spmm_cuda(AdjMatrixCSR& A, AdjMatrixCSR& B) {
         C_row[i+1] += C_row[i];
     }
 
+
 	cudaMalloc(&C_col_gpu, C_row[numrows+1] * sizeof(INT));
 	cudaMalloc(&C_val_gpu, C_row[numrows+1] * sizeof(INT));
-	
+	C_col = (INT*)malloc(sizeof(INT) * C_row[numrows+1]);
+	C_col = (INT*)malloc(sizeof(INT) * C_row[numrows+1]);
 
 
-	GetVals<<<GRIDSIZE, BLOCKSIZE>>>(A_row, A_col, A_val, B_row, B_col, B_val, C_row_gpu,C_col_gpu,C_val_gpu, work,numrows);
-	cudaMemcpy(C_col, C_col_gpu, (C_row[numrows+1] * sizeof(INT), cudaMemcpyDeviceToHost);
-	cudaMemcpy(C_val, C_val_gpu, (C_row[numrows+1] * sizeof(INT), cudaMemcpyDeviceToHost);
+	GetVals<<<GRIDSIZE, BLOCKSIZE>>>(A_row, A_col, A_val, B_row, B_col, B_val, C_row_gpu,C_col_gpu,C_val_gpu, work);
+
+	cudaMemcpy(C_col, C_col_gpu, C_row[numrows+1] * sizeof(INT), cudaMemcpyDeviceToHost);
+	cudaMemcpy(C_val, C_val_gpu, C_row[numrows+1] * sizeof(INT), cudaMemcpyDeviceToHost);
 
     // cudaMemcpy to host
     AdjMatrixCSR result(A.num_rows(), 0, C_row, NULL, NULL);
