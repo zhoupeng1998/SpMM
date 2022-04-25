@@ -32,6 +32,9 @@ int main(void) {
     */
     //test_testgraph_spmm_dense_gpu();
     
-    test_hadamard();
+    //test_hadamard();
+    test_cpu_full_v1(80000);
+    test_cuda_full_v1(80000);
+    
     return 0;
 }

@@ -71,15 +71,18 @@ void test_cuda_full_v1() {
     std::cout << "A: " << std::endl;
     A.dump_front();
     std::cout << std::endl;
-
+    clock_start_cpu();
     clock_start_cuda();
     AdjMatrixCSR C = csr_spmm_cuda(A, B);
+
     clock_stop_cuda();
+    clock_stop_cpu();
 
     std::cout << "C: " << std::endl;
     C.dump_front();
 
-    std::cout << "time: " << get_time_cuda() << "ns" << std::endl;
+    //std::cout << "time: " << get_time_cuda() << "ns" << std::endl;
+    std::cout << "time: " << get_time_cpu() << "ns" << std::endl;
 }
 
 void test_cuda_full_v1(int limit) {
@@ -92,13 +95,14 @@ void test_cuda_full_v1(int limit) {
     std::cout << "A: " << std::endl;
     A.dump_front();
     std::cout << std::endl;
-
+    clock_start_cpu();
     clock_start_cuda();
     AdjMatrixCSR C = csr_spmm_cuda(A, B);
     clock_stop_cuda();
+    clock_stop_cpu();
 
     std::cout << "C: " << std::endl;
     C.dump_front();
-
-    std::cout << "time: " << get_time_cuda() << "ns" << std::endl;
+std::cout << "time: " << get_time_cpu() << "ns" << std::endl;
+    //std::cout << "time: " << get_time_cuda() << "ns" << std::endl;
 }
