@@ -48,3 +48,18 @@ void test_var_nnz_spmm_dense_gpu(int percentage) {
 
     std::cout << percentage << "% Time - Dense: " << get_time_cuda() << " ms" << std::endl;
 }
+
+void test_var_nnz_spmm_ge_gpu(int percentage) {
+    int nnz = GENGRAPHSIZE * GENGRAPHSIZE * percentage / 100;
+    produce_graph(GENGRAPHSIZE, nnz);
+
+    AdjEdges edges("../../graph/test-graph-A.edges");
+    AdjMatrixCSR A(edges);
+
+    INT *work = (INT *) calloc(A.rows, sizeof(INT));
+    AdjMatrixCSR* C_symb = csr_spmm_cpu_symbolic(&A, &A, work);
+    free(work);
+
+    std::cout << percentage << "% Time - GE:" << std::endl;
+    AdjMatrixCSR C = csr_spmm_cuda_v0(A, A, C_symb->rowPtr);
+}

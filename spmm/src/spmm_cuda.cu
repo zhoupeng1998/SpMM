@@ -1,10 +1,10 @@
-#include "stdio.h"
-
 #include <iostream>
 
 #include "data.h"
 #include "adj_matrix_csr.h"
 #include "spmm_cuda.h"
+#include "spmm_serial.h"
+#include "timer.h"
 
 // #define GRIDSIZE 128
 // #define BLOCKSIZE 1024
@@ -158,8 +158,6 @@ INT* C_row, INT* C_col, INT* C_val, INT* indexTable)
 }
 
 
-
-
 AdjMatrixCSR csr_spmm_cuda(AdjMatrixCSR& A, AdjMatrixCSR& B) {
     INT* A_row;
     INT* A_col;
@@ -209,11 +207,99 @@ AdjMatrixCSR csr_spmm_cuda(AdjMatrixCSR& A, AdjMatrixCSR& B) {
     cudaMalloc(&C_col_gpu, C_row[numrows+1] * sizeof(INT));
     cudaMalloc(&C_val_gpu, C_row[numrows+1] * sizeof(INT));
     C_col = (INT*)malloc(sizeof(INT) * C_row[numrows+1]);
-    C_col = (INT*)malloc(sizeof(INT) * C_row[numrows+1]);
+    C_val = (INT*)malloc(sizeof(INT) * C_row[numrows+1]);
 
 
     GetVals<<<GRIDSIZE, BLOCKSIZE>>>(A_row, A_col, A_val, B_row, B_col, B_val, C_row_gpu,C_col_gpu,C_val_gpu, work);
 
+    cudaMemcpy(C_col, C_col_gpu, C_row[numrows+1] * sizeof(INT), cudaMemcpyDeviceToHost);
+    cudaMemcpy(C_val, C_val_gpu, C_row[numrows+1] * sizeof(INT), cudaMemcpyDeviceToHost);
+
+    // cudaMemcpy to host
+    AdjMatrixCSR result(A.num_rows(), 0, C_row, NULL, NULL);
+    
+    result.size=C_row[numrows+1];
+    return result;
+}
+
+AdjMatrixCSR csr_spmm_cuda_v0(AdjMatrixCSR& A, AdjMatrixCSR& B, INT* C_row_cpu) {
+
+    cudaEvent_t timer_start_cuda_symbolic, timer_stop_cuda_symbolic;
+    float time_cuda_symbolic;
+    cudaEvent_t timer_start_cuda_numeric, timer_stop_cuda_numeric;
+    float time_cuda_numeric;
+
+    INT* A_row;
+    INT* A_col;
+    INT* A_val;
+    INT* B_row;
+    INT* B_col;
+    INT* B_val;
+    INT* C_row;
+    INT* C_row_gpu;
+    INT* C_col;
+    INT* C_col_gpu;
+    INT* C_val;
+    INT* C_val_gpu;
+    INT* work;
+    
+    numrows = A.num_rows();
+    C_row = (INT*)malloc(sizeof(INT) * (numrows+1));
+
+    cudaMalloc(&A_row, (A.num_rows() + 1) * sizeof(INT));
+    cudaMalloc(&A_col, A.num_size() * sizeof(INT));
+    cudaMalloc(&A_val, A.num_size() * sizeof(INT));
+    cudaMalloc(&B_row, (B.num_rows() + 1) * sizeof(INT));
+    cudaMalloc(&B_col, B.num_size() * sizeof(INT));
+    cudaMalloc(&B_val, B.num_size() * sizeof(INT));
+    cudaMalloc(&C_row_gpu, (A.num_rows() + 1) * sizeof(INT));
+    cudaMalloc(&work, 1024*B.num_rows() * sizeof(INT));
+
+    cudaMemcpy(A_row, A.get_rows(), (A.num_rows() + 1) * sizeof(INT), cudaMemcpyHostToDevice);
+    cudaMemcpy(A_col, A.get_cols(), A.num_size() * sizeof(INT), cudaMemcpyHostToDevice);
+    cudaMemcpy(A_val, A.get_vals(), A.num_size() * sizeof(INT), cudaMemcpyHostToDevice);
+    cudaMemcpy(B_row, B.get_rows(), (B.num_rows() + 1) * sizeof(INT), cudaMemcpyHostToDevice);
+    cudaMemcpy(B_col, B.get_cols(), B.num_size() * sizeof(INT), cudaMemcpyHostToDevice);
+    cudaMemcpy(B_val, B.get_vals(), B.num_size() * sizeof(INT), cudaMemcpyHostToDevice);
+
+    // call kernel
+    /*
+    cudaEventCreate(&timer_start_cuda_symbolic);
+    cudaEventCreate(&timer_stop_cuda_symbolic);
+    cudaEventRecord(timer_start_cuda_symbolic, 0);
+    */
+    GetNNZ<<<GRIDSIZE, BLOCKSIZE,numrows>>>(A_row, A_col, A_val, B_row, B_col, B_val, C_row_gpu, work,numrows);
+    /*
+    cudaEventRecord(timer_stop_cuda_symbolic, 0);
+    cudaEventSynchronize(timer_stop_cuda_symbolic);
+    cudaEventElapsedTime(&time_cuda_symbolic, timer_start_cuda_symbolic, timer_stop_cuda_symbolic);
+    std::cout << "Symbolic: " << time_cuda_symbolic << " ms" << std::endl;
+    */
+    cudaMemcpy(C_row, C_row_gpu, (A.num_rows() + 1) * sizeof(INT), cudaMemcpyDeviceToHost);
+
+    // prefix sum
+    C_row[0] = 0;
+    for (INT i = 0; i < numrows; i++) {
+        C_row[i+1] += C_row[i];
+    }
+
+
+    cudaMalloc(&C_col_gpu, C_row[numrows+1] * sizeof(INT));
+    cudaMalloc(&C_val_gpu, C_row[numrows+1] * sizeof(INT));
+    C_col = (INT*)malloc(sizeof(INT) * C_row_cpu[numrows+1]);
+    C_val = (INT*)malloc(sizeof(INT) * C_row_cpu[numrows+1]);
+    /*
+    cudaEventCreate(&timer_start_cuda_numeric);
+    cudaEventCreate(&timer_stop_cuda_numeric);
+    cudaEventRecord(timer_start_cuda_numeric, 0);
+    */
+    GetVals<<<GRIDSIZE, BLOCKSIZE>>>(A_row, A_col, A_val, B_row, B_col, B_val, C_row_cpu,C_col_gpu,C_val_gpu, work);
+    /*
+    cudaEventRecord(timer_stop_cuda_numeric, 0);
+    cudaEventSynchronize(timer_stop_cuda_numeric);
+    cudaEventElapsedTime(&time_cuda_numeric, timer_start_cuda_numeric, timer_stop_cuda_numeric);
+    std::cout << "Numeric: " << get_time_cpu() << " ms" << std::endl;
+    */
     cudaMemcpy(C_col, C_col_gpu, C_row[numrows+1] * sizeof(INT), cudaMemcpyDeviceToHost);
     cudaMemcpy(C_val, C_val_gpu, C_row[numrows+1] * sizeof(INT), cudaMemcpyDeviceToHost);
 
