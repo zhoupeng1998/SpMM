@@ -4,8 +4,11 @@
 #include <iostream>
 #include <omp.h>
 #include <time.h>
+
+#include "data.h"
 #include "spmm_serial.h"
 #include "adj_matrix_csr.h"
+#include "timer.h"
 
 AdjMatrixCSR *csr_spmm_cpu_symbolic(AdjMatrixCSR *A, AdjMatrixCSR *B, INT *work)
 {
@@ -23,9 +26,11 @@ AdjMatrixCSR *csr_spmm_cpu_symbolic(AdjMatrixCSR *A, AdjMatrixCSR *B, INT *work)
         for (i2 = A->rowPtr[i1]; i2 < A->rowPtr[i1+1]; i2++)
         {
             INT j = A->colInd[i2]; 
+            /*
             if(j < 0|| j>=k){
                 std::cout<<j<<std::endl;
             }
+            */
             assert(j >= 0 && j < k);
             for (i3 = B->rowPtr[j]; i3 < B->rowPtr[j+1]; i3++)
             {
@@ -65,7 +70,7 @@ AdjMatrixCSR *csr_spmm_cpu_symbolic(AdjMatrixCSR *A, AdjMatrixCSR *B, INT *work)
     //     std::cout<<"malloc C->colInd failed, the required size val"<< C->size<<std::endl;
     // }
 
-    std::cout<<"finished symbolic"<<std::endl;
+    //std::cout<<"finished symbolic"<<std::endl;
 
     return C;
 }
@@ -120,20 +125,18 @@ AdjMatrixCSR * csr_spmm_cpu(AdjMatrixCSR *A, AdjMatrixCSR *B)
 
     INT *work = (INT *) calloc(B->rows, sizeof(INT));
     
-    if(clock_gettime(CLOCK_REALTIME,&start)==-1){perror("time error");}
-
+    clock_start_cpu();
     AdjMatrixCSR *C = csr_spmm_cpu_symbolic(A, B, work);
-
-    if(clock_gettime(CLOCK_REALTIME,&end)==-1){perror("time error");}
-
-    time = (end.tv_sec-start.tv_sec)+(double)(end.tv_nsec-start.tv_nsec)/1e9;
-
-    printf("symbolic time CPU: %f ns\n", time*1e3 );
+    clock_stop_cpu();
+    std::cout << "Symbolic: " << get_time_cpu() << " ms" << std::endl;
 
     memset(work, 0, B->cols*sizeof(INT));
    
-
+    clock_start_cpu();
     csr_spmm_cpu_numeric(A, B, C, work);
+    clock_stop_cpu();
+    std::cout << "Numeric: " << get_time_cpu() << " ms" << std::endl;
+
     free(work);
     return C;
 }
@@ -189,11 +192,11 @@ AdjMatrixDense csr_spmm_dense_cpu(AdjMatrixCSR& A, AdjMatrixCSR& B) {
         for (int i2 = A.rowPtr[i1]; i2 < A.rowPtr[i1+1]; i2++) {
             int colA = A.colInd[i2];
             int va = A.val[i2];
-            //assert(colA >= 0 && colA < B.num_rows());
+            assert(colA >= 0 && colA < B.num_rows());
             for (int i3 = B.rowPtr[colA]; i3 < B.rowPtr[colA+1]; i3++) {
                 int colB = B.colInd[i3];
                 int vb = B.val[i3];
-                //assert(col >= 0 && col < B.num_rows());
+                assert(colB >= 0 && colB < B.num_rows());
                 result[i1][colB] += va * vb;
             }
         }

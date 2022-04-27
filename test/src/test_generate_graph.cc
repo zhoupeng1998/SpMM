@@ -30,7 +30,7 @@ void produce_graph(int size, int nnz) {
     GraphGenerator generator(size, nnz);
     generator.generate();
     generator.store_graph("../../graph/test-graph-A.edges");
-    sleep(2);
-    generator.generate();
-    generator.store_graph("../../graph/test-graph-B.edges");
+    //sleep(2);
+    //generator.generate();
+    //generator.store_graph("../../graph/test-graph-B.edges");
 }
