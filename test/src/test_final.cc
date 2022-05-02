@@ -9,6 +9,7 @@
 #include "spmm_serial.h"
 #include "spmm_cuda.h"
 #include "timer.h"
+#include <sys/time.h>
 
 #define GENGRAPHSIZE 8192
 
@@ -61,5 +62,24 @@ void test_var_nnz_spmm_ge_gpu(int percentage) {
     free(work);
 
     std::cout << percentage << "% Time - GE:" << std::endl;
+
+
+    struct timeval t1, t2;
+
+    gettimeofday(&t1, 0);
+
     AdjMatrixCSR C = csr_spmm_cuda_v0(A, A, C_symb->rowPtr);
+
+    //HANDLE_ERROR(cudaThreadSynchronize();)
+
+    gettimeofday(&t2, 0);
+
+    double time = (1000000.0*(t2.tv_sec-t1.tv_sec) + t2.tv_usec-t1.tv_usec)/1000.0;
+
+    printf("Time to generate:  %3.1f ms \n", time);
+
+    // std::cout << " " << get_time_cpu() << " ms" << std::endl;
+
+
+
 }
