@@ -59,6 +59,7 @@ void test_var_nnz_spmm_ge_gpu(int percentage) {
 
     INT *work = (INT *) calloc(A.rows, sizeof(INT));
     AdjMatrixCSR* C_symb = csr_spmm_cpu_symbolic(&A, &A, work);
+    std::cout<<A.num_size()<<std::endl;
     free(work);
 
     std::cout << percentage << "% Time - GE:" << std::endl;
@@ -67,8 +68,9 @@ void test_var_nnz_spmm_ge_gpu(int percentage) {
     struct timeval t1, t2;
 
     gettimeofday(&t1, 0);
+    INT NNZ=A.num_size();
 
-    AdjMatrixCSR C = csr_spmm_cuda_v0(A, A, C_symb->rowPtr);
+    AdjMatrixCSR C = csr_spmm_cuda_v0(A, A, C_symb->rowPtr,NNZ);
 
     //HANDLE_ERROR(cudaThreadSynchronize();)
 
@@ -76,7 +78,7 @@ void test_var_nnz_spmm_ge_gpu(int percentage) {
 
     double time = (1000000.0*(t2.tv_sec-t1.tv_sec) + t2.tv_usec-t1.tv_usec)/1000.0;
 
-    printf("Time to generate:  %3.1f ms \n", time);
+    printf("Time to generate:  %3.2f ms \n", time);
 
     // std::cout << " " << get_time_cpu() << " ms" << std::endl;
 

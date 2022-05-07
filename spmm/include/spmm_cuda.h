@@ -24,7 +24,7 @@
 #define SIZE GRIDSIZE*BLOCKSIZE
 
 AdjMatrixCSR csr_spmm_cuda(AdjMatrixCSR& A, AdjMatrixCSR& B);
-AdjMatrixCSR csr_spmm_cuda_v0(AdjMatrixCSR& A, AdjMatrixCSR& B, INT* C_row);
+AdjMatrixCSR csr_spmm_cuda_v0(AdjMatrixCSR& A, AdjMatrixCSR& B, INT* C_row,INT nnz);
 
 AdjMatrixDense csr_spmm_dense_cuda(AdjMatrixCSR& A, AdjMatrixCSR& B);
 AdjMatrixDense csr_spmm_dense_cuda_v2(AdjMatrixCSR& A, AdjMatrixCSR& B);

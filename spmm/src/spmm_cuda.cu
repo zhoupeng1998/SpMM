@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stdio.h>
+#include <sys/time.h>
 #include "data.h"
 #include "adj_matrix_csr.h"
 #include "spmm_cuda.h"
@@ -93,19 +94,17 @@ INT* C_row, INT* C_col, INT* C_val, INT* indexTable)
     
     __shared__ unsigned int back;
     
-    INT rowAStart; // The index into A.jc and A.val
-    INT rowAEnd; // The boundary index for A
-    INT valA; // The value of the current A nonzero
-    INT rowBStart; // The index into B.jc and B.val
-    INT rowBEnd; // The boundary index for B
-    INT colB; // The current column in B being used
-    INT rowCStart; // The index into C.jc and C.val
-    INT rowCEnd; // The boundary index for C
-    INT hash; // The calculated hash value
-    INT i, j; // Loop iterators
+    INT rowAStart; 
+    INT rowAEnd; 
+    INT valA; 
+    INT rowBStart; 
+    INT rowBEnd; 
+    INT colB; 
+    INT rowCStart; 
+    INT rowCEnd; 
+    INT hash; 
+    INT i, j; 
 
-    // Set the global hash table to point to the space
-    // used by this warp
     INT* gColHashTable;
     INT* gValHashTable;
     INT globalEntries;
@@ -126,20 +125,24 @@ INT* C_row, INT* C_col, INT* C_val, INT* indexTable)
             indexTable[i] = -1;
         }
         __syncthreads();
+       
+        
 
-        // Set the location of the global hash table
         rowCStart = C_row[rowA];
+        
 		
         rowCEnd = C_row[rowA + 1];
+
+        
         globalEntries = rowCEnd - rowCStart;
+
         gColHashTable = &C_col[rowCStart];
         gValHashTable = &C_val[rowCStart];
-
+        
+        //printf(" staaaa\n");s
 		
         for(i = rowAStart; i < rowAEnd; ++i)
         {	
-			
-
             valA = A_val[i];
             rowBStart = B_row[A_col[i]];
             rowBEnd = B_row[A_col[i] + 1];
@@ -160,11 +163,8 @@ INT* C_row, INT* C_col, INT* C_val, INT* indexTable)
                 storeFloat = hash == -1 ? &valA : &gValHashTable[hash];
                 *storeFloat += valB * valA;
             }
-        } // For each nonzero in the A row
-    } // For each assigned row in A
-
-
-
+        } 
+    } 
 
 }
 
@@ -233,7 +233,7 @@ AdjMatrixCSR csr_spmm_cuda(AdjMatrixCSR& A, AdjMatrixCSR& B) {
     return result;
 }
 
-AdjMatrixCSR csr_spmm_cuda_v0(AdjMatrixCSR& A, AdjMatrixCSR& B, INT* C_row_cpu) {
+AdjMatrixCSR csr_spmm_cuda_v0(AdjMatrixCSR& A, AdjMatrixCSR& B, INT* C_row_cpu, INT nnz) {
 
     cudaEvent_t timer_start_cuda_symbolic, timer_stop_cuda_symbolic;
     float time_cuda_symbolic;
@@ -276,22 +276,27 @@ AdjMatrixCSR csr_spmm_cuda_v0(AdjMatrixCSR& A, AdjMatrixCSR& B, INT* C_row_cpu) 
     // call kernel
 
 
-    // cudaEventCreate(&timer_start_cuda_symbolic);
-    // cudaEventCreate(&timer_stop_cuda_symbolic);
-    // cudaEventRecord(timer_start_cuda_symbolic, 0);
+    cudaEventCreate(&timer_start_cuda_symbolic);
+    cudaEventCreate(&timer_stop_cuda_symbolic);
+    cudaEventRecord(timer_start_cuda_symbolic, 0);
+ 
+
 
 //    clock_start_cpu();
     GetNNZ<<<GRIDSIZE, BLOCKSIZE,numrows>>>(A_row, A_col, A_val, B_row, B_col, B_val, C_row_gpu, work,numrows);
+
+
+
 	// clock_stop_cpu();
 	//  std::cout << "Symbolic: " << get_time_cpu() << " ms" << std::endl;
 
-    // cudaEventRecord(timer_stop_cuda_symbolic, 0);
-    // cudaEventSynchronize(timer_stop_cuda_symbolic);
-    // cudaEventElapsedTime(&time_cuda_symbolic, timer_start_cuda_symbolic, timer_stop_cuda_symbolic);
-    // std::cout << "Symbolic: " << time_cuda_symbolic << " ms" << std::endl;
+    cudaEventRecord(timer_stop_cuda_symbolic, 0);
+    cudaEventSynchronize(timer_stop_cuda_symbolic);
+    cudaEventElapsedTime(&time_cuda_symbolic, timer_start_cuda_symbolic, timer_stop_cuda_symbolic);
+    std::cout << "Symbolic: " << time_cuda_symbolic << " ms" << std::endl;
 	
-	// cudaEventDestroy(timer_start_cuda_symbolic);
-	// cudaEventDestroy(timer_stop_cuda_symbolic);
+	cudaEventDestroy(timer_start_cuda_symbolic);
+	cudaEventDestroy(timer_stop_cuda_symbolic);
 
 
 
@@ -310,11 +315,14 @@ AdjMatrixCSR csr_spmm_cuda_v0(AdjMatrixCSR& A, AdjMatrixCSR& B, INT* C_row_cpu) 
     C_col = (INT*)malloc(sizeof(INT) * C_row_cpu[numrows+1]);
     C_val = (INT*)malloc(sizeof(INT) * C_row_cpu[numrows+1]);
     
+    cudaMemcpy(C_row_gpu, C_row, nnz * sizeof(INT), cudaMemcpyHostToDevice);
+
     // cudaEventCreate(&timer_start_cuda_numeric);
     // cudaEventCreate(&timer_stop_cuda_numeric);
     // cudaEventRecord(timer_start_cuda_numeric, 0);
 
-    GetVals<<<GRIDSIZE, BLOCKSIZE>>>(A_row, A_col, A_val, B_row, B_col, B_val, C_row_cpu,C_col_gpu,C_val_gpu, work);
+
+    GetVals<<<GRIDSIZE, BLOCKSIZE>>>(A_row, A_col, A_val, B_row, B_col, B_val, C_row_gpu,C_col_gpu,C_val_gpu, work);
 
 
     // cudaEventRecord(timer_stop_cuda_numeric, 0);
