@@ -1,6 +1,10 @@
 # SpMM
 Graph Algorithms using SpMM on GPU
 
+Author: Bin Ma, Peng Zhou
+
+[GitHub Link](https://link-url-here.org)
+
 ## Prerequisites
 The following dependencies or above versions are requiredfor this project
 ```
