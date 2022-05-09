@@ -38,11 +38,11 @@ int main(void) {
     //test_cuda_full_v1(80000);
 
     //int densities[] = {1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50};
-    int densities[] = { 10};
+    int densities[] = { 5};
 
     for (int i = 0; i < sizeof(densities) / sizeof(int); i++) {
         //test_var_nnz_spmm_dense_cpu(densities[i]);
-        //test_var_nnz_spmm_ge_cpu(densities[i]);
+        test_var_nnz_spmm_ge_cpu(densities[i]);
         test_var_nnz_spmm_dense_gpu(densities[i]);
         test_var_nnz_spmm_ge_gpu(densities[i]);
     }

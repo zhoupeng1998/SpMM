@@ -15,8 +15,8 @@
 #define TEST_DENSE 1
 
 #ifdef TEST_DENSE
-#define GRIDSIZE 8
-#define BLOCKSIZE 512
+#define GRIDSIZE 4
+#define BLOCKSIZE 1024
 #else
 #define GRIDSIZE 128
 #define BLOCKSIZE 1024
